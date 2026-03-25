@@ -2573,7 +2573,7 @@ function initFileTips() {
 }
 
 // ============ 五、网安学习小助手 ============
-function initLearnTools() {
+function initLearnToolsOld() {
     initGlossary();
     initCtfKnowledge();
     initCheckin();

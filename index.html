@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网安安全小白工具箱 Pro Max</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/ai.css">
+</head>
+<body>
+    <!-- 动态背景 -->
+    <div class="background-grid"></div>
+    <div class="background-glow"></div>
+    
+    <div class="app-container">
+        <!-- 左侧侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-section">
+                    <span class="logo-icon">🛡️</span>
+                    <span class="logo-text">工具箱 Pro</span>
+                </div>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="搜索工具...">
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <nav class="nav-menu" id="navMenu">
+                <div class="nav-category">
+                    <div class="category-title">安全工具</div>
+                    <ul class="nav-list">
+                        <li class="nav-item active" data-page="password">
+                            <span class="nav-icon">🔐</span>
+                            <span>密码安全</span>
+                        </li>
+                        <li class="nav-item" data-page="encode">
+                            <span class="nav-icon">🔢</span>
+                            <span>编码解码</span>
+                        </li>
+                        <li class="nav-item" data-page="network">
+                            <span class="nav-icon">🌐</span>
+                            <span>网络信息</span>
+                        </li>
+                        <li class="nav-item" data-page="visual">
+                            <span class="nav-icon">📊</span>
+                            <span>可视化</span>
+                        </li>
+                        <li class="nav-item" data-page="knowledge">
+                            <span class="nav-icon">📚</span>
+                            <span>安全知识</span>
+                        </li>
+                        <li class="nav-item" data-page="learn">
+                            <span class="nav-icon">🎓</span>
+                            <span>学习助手</span>
+                        </li>
+                        <li class="nav-item" data-page="doubao-ai">
+                            <span class="nav-icon">🤖</span>
+                            <span>豆包AI</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <div class="category-title">日常工具</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-page="text">
+                            <span class="nav-icon">📝</span>
+                            <span>文本工具</span>
+                        </li>
+                        <li class="nav-item" data-page="math">
+                            <span class="nav-icon">🧮</span>
+                            <span>数学计算</span>
+                        </li>
+                        <li class="nav-item" data-page="datetime">
+                            <span class="nav-icon">📅</span>
+                            <span>时间日期</span>
+                        </li>
+                        <li class="nav-item" data-page="color">
+                            <span class="nav-icon">🎨</span>
+                            <span>颜色工具</span>
+                        </li>
+                        <li class="nav-item" data-page="convert">
+                            <span class="nav-icon">🔄</span>
+                            <span>单位转换</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <div class="category-title">开发工具</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-page="dev">
+                            <span class="nav-icon">💻</span>
+                            <span>开发工具</span>
+                        </li>
+                        <li class="nav-item" data-page="qrcode">
+                            <span class="nav-icon">📱</span>
+                            <span>二维码</span>
+                        </li>
+                        <li class="nav-item" data-page="image">
+                            <span class="nav-icon">🖼️</span>
+                            <span>图片工具</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="nav-category">
+                    <div class="category-title">生活金融</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-page="life">
+                            <span class="nav-icon">🏠</span>
+                            <span>生活工具</span>
+                        </li>
+                        <li class="nav-item" data-page="finance">
+                            <span class="nav-icon">💰</span>
+                            <span>金融工具</span>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- 底部信息 -->
+            <div class="sidebar-footer">
+                <div class="theme-toggle">
+                    <button class="theme-btn" id="themeBtn">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-text">深色模式</span>
+                    </button>
+                </div>
+                <div class="real-time-clock" id="realTimeClock">--:--:--</div>
+                <p class="footer-text">仅供学习交流使用</p>
+            </div>
+        </aside>
+        
+        <!-- 移动端顶部栏 -->
+        <header class="mobile-header">
+            <button class="menu-toggle" id="menuToggle">
+                <span class="hamburger"></span>
+            </button>
+            <div class="mobile-logo">
+                <span class="logo-icon">🛡️</span>
+                <span>工具箱 Pro</span>
+            </div>
+            <div class="mobile-clock" id="mobileClock">--:--:--</div>
+        </header>
+        
+        <!-- 主内容区域 -->
+        <main class="main-content" id="mainContent">
+            <!-- 一、密码安全工具页面 -->
+            <section class="page active" id="password">
+                <div class="page-header">
+                    <h1 class="page-title">密码安全工具</h1>
+                    <p class="page-subtitle">保护您的数字安全</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 密码强度检测 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔐</span>
+                            密码强度检测
+                        </h3>
+                        <input type="password" id="passwordInput" class="input-field" placeholder="请输入要检测的密码">
+                        
+                        <!-- 密码要求检查项 -->
+                        <div class="password-requirements" id="passwordRequirements">
+                            <div class="req-item" id="reqLength">
+                                <span class="req-icon">❌</span>
+                                <span>长度至少8位</span>
+                            </div>
+                            <div class="req-item" id="reqUpper">
+                                <span class="req-icon">❌</span>
+                                <span>包含大写字母</span>
+                            </div>
+                            <div class="req-item" id="reqLower">
+                                <span class="req-icon">❌</span>
+                                <span>包含小写字母</span>
+                            </div>
+                            <div class="req-item" id="reqNumber">
+                                <span class="req-icon">❌</span>
+                                <span>包含数字</span>
+                            </div>
+                            <div class="req-item" id="reqSymbol">
+                                <span class="req-icon">❌</span>
+                                <span>包含特殊字符</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 柱状图可视化 -->
+                        <div class="strength-chart">
+                            <div class="chart-bar">
+                                <div class="bar-label">长度</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill" id="barLength" style="height: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-label">大写</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill" id="barUpper" style="height: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-label">小写</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill" id="barLower" style="height: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-label">数字</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill" id="barNumber" style="height: 0%"></div>
+                                </div>
+                            </div>
+                            <div class="chart-bar">
+                                <div class="bar-label">特殊字符</div>
+                                <div class="bar-container">
+                                    <div class="bar-fill" id="barSymbol" style="height: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                        <p class="strength-text" id="strengthText">请输入密码进行检测</p>
+                        <p class="weak-tips" id="weakTips"></p>
+                    </div>
+
+                    <!-- 随机强密码生成 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🎲</span>
+                            随机强密码生成
+                        </h3>
+                        <div class="password-options">
+                            <label class="option-label">
+                                <input type="checkbox" id="includeUpper" checked> 大写字母
+                            </label>
+                            <label class="option-label">
+                                <input type="checkbox" id="includeLower" checked> 小写字母
+                            </label>
+                            <label class="option-label">
+                                <input type="checkbox" id="includeNumbers" checked> 数字
+                            </label>
+                            <label class="option-label">
+                                <input type="checkbox" id="includeSymbols" checked> 特殊字符
+                            </label>
+                        </div>
+                        
+                        <!-- 自定义规则 -->
+                        <div class="custom-rules">
+                            <div class="rule-item">
+                                <label class="option-label">排除字符：</label>
+                                <input type="text" id="excludeChars" class="input-field" placeholder="如: O0lI" style="width: 120px; margin: 0;">
+                            </div>
+                            <div class="rule-item">
+                                <label class="option-label">
+                                    <input type="checkbox" id="avoidConfusion"> 避免易混淆字符 (O/0, l/1)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="length-control">
+                            <span>密码长度：</span>
+                            <input type="range" id="passwordLength" min="8" max="32" value="16">
+                            <span id="lengthValue">16</span>
+                        </div>
+                        <input type="text" id="generatedPassword" class="input-field" readonly placeholder="点击生成密码">
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="generateBtn">生成密码</button>
+                            <button class="btn btn-secondary" id="copyPasswordBtn">复制密码</button>
+                        </div>
+                        
+                        <!-- 复制反馈提示 -->
+                        <div class="copy-feedback" id="copyFeedback" style="display: none;">
+                            ✅ 已复制到剪贴板！
+                        </div>
+                    </div>
+
+                    <!-- 密码历史记录 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📋</span>
+                            密码历史记录
+                        </h3>
+                        <div class="password-history" id="passwordHistory">
+                            <p class="history-empty">暂无保存的密码</p>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-secondary" id="clearHistoryBtn">清空历史</button>
+                        </div>
+                    </div>
+
+                    <!-- MD5 / SHA256 加密 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔒</span>
+                            MD5 / SHA256 加密
+                        </h3>
+                        <input type="text" id="hashInput" class="input-field" placeholder="请输入要加密的文本">
+                        <div class="hash-result">
+                            <label>MD5：</label>
+                            <input type="text" id="md5Result" class="input-field result-field" readonly>
+                        </div>
+                        <div class="hash-result">
+                            <label>SHA256：</label>
+                            <input type="text" id="sha256Result" class="input-field result-field" readonly>
+                        </div>
+                        <button class="btn btn-primary" id="hashBtn">加密</button>
+                    </div>
+
+                    <!-- 常见弱密码提醒 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚠️</span>
+                            常见弱密码提醒
+                        </h3>
+                        <ul class="weak-password-list" id="weakPasswordList"></ul>
+                        <p class="tip-text">💡 请避免使用以上密码！</p>
+                    </div>
+
+                    <!-- 弱密码扫描 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔍</span>
+                            弱密码扫描
+                        </h3>
+                        <input type="text" id="weakPasswordScanInput" class="input-field" placeholder="输入要扫描的密码">
+                        <button class="btn btn-primary" id="scanWeakPasswordBtn">扫描密码</button>
+                        <div class="scan-result" id="weakPasswordScanResult" style="margin-top: 16px;"></div>
+                    </div>
+
+                    <!-- 密码字典生成器 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📚</span>
+                            密码字典生成器
+                        </h3>
+                        <div class="dictionary-options">
+                            <label class="option-label">基础单词：</label>
+                            <input type="text" id="dictBaseWord" class="input-field" placeholder="如: admin, password">
+                            <label class="option-label">
+                                <input type="checkbox" id="dictIncludeNumbers" checked> 添加数字
+                            </label>
+                            <label class="option-label">
+                                <input type="checkbox" id="dictIncludeSymbols"> 添加符号
+                            </label>
+                            <label class="option-label">
+                                <input type="checkbox" id="dictIncludeYear"> 添加年份
+                            </label>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="generateDictBtn">生成字典</button>
+                            <button class="btn btn-secondary" id="exportDictBtn">导出字典</button>
+                        </div>
+                        <textarea id="dictOutput" class="textarea-field result-field" readonly placeholder="生成的密码字典"></textarea>
+                    </div>
+
+                    <!-- 哈希碰撞演示 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚔️</span>
+                            哈希碰撞演示
+                        </h3>
+                        <p class="tip-text" style="margin-bottom: 12px;">💡 演示不同字符串产生相同哈希值的现象（MD5已被破解）</p>
+                        <div class="hash-collision-demo">
+                            <textarea id="collisionInput1" class="textarea-field" placeholder="输入第一个字符串"></textarea>
+                            <textarea id="collisionInput2" class="textarea-field" placeholder="输入第二个字符串"></textarea>
+                        </div>
+                        <button class="btn btn-primary" id="checkCollisionBtn">检查碰撞</button>
+                        <div class="collision-result" id="collisionResult" style="margin-top: 16px;"></div>
+                        <div class="collision-examples" style="margin-top: 16px;">
+                            <h4 style="color: var(--primary-color); margin-bottom: 8px;">预定义碰撞示例：</h4>
+                            <div class="button-group">
+                                <button class="btn btn-secondary collision-example-btn" data-example="1">示例1</button>
+                                <button class="btn btn-secondary collision-example-btn" data-example="2">示例2</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 二、编码解码工具页面 -->
+            <section class="page" id="encode">
+                <div class="page-header">
+                    <h1 class="page-title">编码解码工具</h1>
+                    <p class="page-subtitle">数据转换与处理</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- Base64 编码/解码 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔢</span>
+                            Base64 编码 / 解码
+                        </h3>
+                        <textarea id="base64Input" class="textarea-field" placeholder="请输入文本"></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="base64EncodeBtn">编码</button>
+                            <button class="btn btn-secondary" id="base64DecodeBtn">解码</button>
+                            <button class="btn btn-secondary" id="base64ExportBtn">导出</button>
+                        </div>
+                        <textarea id="base64Output" class="textarea-field result-field" readonly placeholder="结果"></textarea>
+                        <div class="copy-code-group">
+                            <button class="btn btn-secondary copy-code-btn" data-target="base64Output">复制为代码</button>
+                        </div>
+                    </div>
+
+                    <!-- URL 编码/解码 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🌐</span>
+                            URL 编码 / 解码
+                        </h3>
+                        <textarea id="urlInput" class="textarea-field" placeholder="请输入文本"></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="urlEncodeBtn">编码</button>
+                            <button class="btn btn-secondary" id="urlDecodeBtn">解码</button>
+                            <button class="btn btn-secondary" id="urlExportBtn">导出</button>
+                        </div>
+                        <textarea id="urlOutput" class="textarea-field result-field" readonly placeholder="结果"></textarea>
+                        <div class="copy-code-group">
+                            <button class="btn btn-secondary copy-code-btn" data-target="urlOutput">复制为代码</button>
+                        </div>
+                    </div>
+
+                    <!-- Unicode 转换 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">✏️</span>
+                            Unicode 转换
+                        </h3>
+                        <textarea id="unicodeInput" class="textarea-field" placeholder="请输入文本"></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="unicodeEncodeBtn">转Unicode</button>
+                            <button class="btn btn-secondary" id="unicodeDecodeBtn">转文本</button>
+                            <button class="btn btn-secondary" id="unicodeExportBtn">导出</button>
+                        </div>
+                        <textarea id="unicodeOutput" class="textarea-field result-field" readonly placeholder="结果"></textarea>
+                        <div class="copy-code-group">
+                            <button class="btn btn-secondary copy-code-btn" data-target="unicodeOutput">复制为代码</button>
+                        </div>
+                    </div>
+
+                    <!-- Hex 编码/解码 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔣</span>
+                            Hex 十六进制编码
+                        </h3>
+                        <textarea id="hexInput" class="textarea-field" placeholder="请输入文本"></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="hexEncodeBtn">转Hex</button>
+                            <button class="btn btn-secondary" id="hexDecodeBtn">转文本</button>
+                            <button class="btn btn-secondary" id="hexExportBtn">导出</button>
+                        </div>
+                        <textarea id="hexOutput" class="textarea-field result-field" readonly placeholder="结果"></textarea>
+                        <div class="copy-code-group">
+                            <button class="btn btn-secondary copy-code-btn" data-target="hexOutput">复制为代码</button>
+                        </div>
+                    </div>
+
+                    <!-- ROT13 编码 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔄</span>
+                            ROT13 编码
+                        </h3>
+                        <textarea id="rot13Input" class="textarea-field" placeholder="请输入文本"></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="rot13EncodeBtn">编码/解码</button>
+                            <button class="btn btn-secondary" id="rot13ExportBtn">导出</button>
+                        </div>
+                        <textarea id="rot13Output" class="textarea-field result-field" readonly placeholder="结果"></textarea>
+                        <div class="copy-code-group">
+                            <button class="btn btn-secondary copy-code-btn" data-target="rot13Output">复制为代码</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 三、网络信息速查页面 -->
+            <section class="page" id="network">
+                <div class="page-header">
+                    <h1 class="page-title">网络信息速查</h1>
+                    <p class="page-subtitle">网络基础信息查询</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 常用端口对照表 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📋</span>
+                            常用端口对照表
+                        </h3>
+                        <div class="port-search-container">
+                            <input type="text" id="portSearchInput" class="input-field" placeholder="搜索端口号或服务名...">
+                        </div>
+                        <table class="info-table" id="portTable"></table>
+                    </div>
+
+                    <!-- 内网/公网 IP 判断 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📍</span>
+                            内网 / 公网 IP 判断
+                        </h3>
+                        <input type="text" id="ipInput" class="input-field" placeholder="请输入IP地址，例如：192.168.1.1">
+                        <p class="ip-result" id="ipResult"></p>
+                        <button class="btn btn-primary" id="checkIpBtn">判断</button>
+                    </div>
+
+                    <!-- IP 信息查询 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔍</span>
+                            IP 信息查询
+                        </h3>
+                        <input type="text" id="ipInfoInput" class="input-field" placeholder="请输入IP地址或域名">
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="dnsResolveBtn">DNS解析</button>
+                            <button class="btn btn-secondary" id="pingTestBtn">Ping测试</button>
+                        </div>
+                        <div class="ip-info-result" id="ipInfoResult">
+                            <p class="history-empty">输入IP或域名后点击查询</p>
+                        </div>
+                    </div>
+
+                    <!-- HTTP 状态码说明 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📡</span>
+                            HTTP 状态码说明
+                        </h3>
+                        <table class="info-table" id="httpStatusTable"></table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 四、安全知识科普页面 -->
+            <section class="page" id="knowledge">
+                <div class="page-header">
+                    <h1 class="page-title">安全知识科普</h1>
+                    <p class="page-subtitle">学习网络安全基础知识</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 知识分类搜索 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔍</span>
+                            知识分类搜索
+                        </h3>
+                        <div class="knowledge-search-container">
+                            <div class="knowledge-categories">
+                                <button class="category-btn active" data-category="all">全部</button>
+                                <button class="category-btn" data-category="web">Web安全</button>
+                                <button class="category-btn" data-category="network">网络安全</button>
+                                <button class="category-btn" data-category="crypto">密码学</button>
+                                <button class="category-btn" data-category="system">系统安全</button>
+                            </div>
+                            <input type="text" id="knowledgeSearchInput" class="input-field" placeholder="搜索安全知识...">
+                        </div>
+                        <div class="knowledge-list" id="knowledgeList"></div>
+                    </div>
+                    
+                    <!-- 常见漏洞简介 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🐛</span>
+                            常见漏洞简介
+                        </h3>
+                        <div class="knowledge-cards" id="vulnerabilityCards"></div>
+                    </div>
+
+                    <!-- 钓鱼网站识别技巧 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🎣</span>
+                            钓鱼网站识别技巧
+                        </h3>
+                        <ul class="tip-list" id="phishingTips"></ul>
+                    </div>
+
+                    <!-- 公共 WiFi 安全提示 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📶</span>
+                            公共 WiFi 安全提示
+                        </h3>
+                        <ul class="tip-list" id="wifiTips"></ul>
+                    </div>
+
+                    <!-- 恶意文件后缀风险提示 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📁</span>
+                            恶意文件后缀风险提示
+                        </h3>
+                        <ul class="tip-list" id="fileTips"></ul>
+                    </div>
+                    
+                    <!-- 安全Checklist -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">✅</span>
+                            安全检查清单
+                        </h3>
+                        <div class="checklist-container" id="checklistContainer">
+                            <div class="checklist-section">
+                                <h4 class="checklist-title">密码安全</h4>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check1">
+                                    <label for="check1">使用强密码（至少8位，包含大小写字母、数字、特殊字符）</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check2">
+                                    <label for="check2">不同账号使用不同密码</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check3">
+                                    <label for="check3">定期更换重要账号密码</label>
+                                </div>
+                            </div>
+                            <div class="checklist-section">
+                                <h4 class="checklist-title">网络安全</h4>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check4">
+                                    <label for="check4">不在公共WiFi下进行网银、支付等敏感操作</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check5">
+                                    <label for="check5">不随意连接陌生WiFi</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check6">
+                                    <label for="check6">使用HTTPS网站，注意查看SSL证书</label>
+                                </div>
+                            </div>
+                            <div class="checklist-section">
+                                <h4 class="checklist-title">系统安全</h4>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check7">
+                                    <label for="check7">定期更新系统和软件补丁</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check8">
+                                    <label for="check8">安装杀毒软件并定期更新</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check9">
+                                    <label for="check9">不随意下载安装未知来源的软件</label>
+                                </div>
+                            </div>
+                            <div class="checklist-section">
+                                <h4 class="checklist-title">社交工程</h4>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check10">
+                                    <label for="check10">不点击陌生链接和附件</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check11">
+                                    <label for="check11">不向陌生人透露个人信息</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check12">
+                                    <label for="check12">警惕中奖、紧急通知等诈骗信息</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-group" style="margin-top: 16px;">
+                            <button class="btn btn-primary" id="saveChecklistBtn">保存进度</button>
+                            <button class="btn btn-secondary" id="resetChecklistBtn">重置</button>
+                        </div>
+                        <div class="checklist-progress" id="checklistProgress">
+                            完成进度：<span id="progressCount">0</span>/12
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 五、可视化展示页面 -->
+            <section class="page" id="visual">
+                <div class="page-header">
+                    <h1 class="page-title">安全可视化中心</h1>
+                    <p class="page-subtitle">直观展示网络安全数据</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 网络拓扑模拟 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🌐</span>
+                            网络拓扑可视化
+                        </h3>
+                        <div class="topology-templates">
+                            <button class="template-btn active" data-template="simple">简单网络</button>
+                            <button class="template-btn" data-template="enterprise">企业内网</button>
+                            <button class="template-btn" data-template="home">家庭网络</button>
+                            <button class="template-btn" data-template="cloud">云服务器</button>
+                        </div>
+                        <div class="network-topology" id="networkTopology"></div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="startTopologyBtn">启动模拟</button>
+                        </div>
+                    </div>
+
+                    <!-- 攻击模拟动画 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚡</span>
+                            安全事件模拟
+                        </h3>
+                        <div class="attack-simulation" id="attackSimulation">
+                            <div class="simulation-controls">
+                                <button class="btn btn-primary" id="startSimulation">开始模拟</button>
+                                <button class="btn btn-danger" id="stopSimulation">停止</button>
+                            </div>
+                            <div class="simulation-screen" id="simulationScreen">
+                                <div class="terminal-lines" id="terminalLines"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 节点状态监控 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">🟢</span>
+                            节点状态监控
+                        </h3>
+                        <div class="button-group" style="margin-bottom: 16px;">
+                            <button class="btn btn-primary" id="refreshNodeStatusBtn">刷新状态</button>
+                            <button class="btn btn-secondary" id="autoRefreshBtn">自动刷新</button>
+                        </div>
+                        <div class="node-status-list" id="nodeStatusList">
+                            <div class="node-status-item">
+                                <span class="node-status-indicator online"></span>
+                                <span>服务器 (192.168.1.1)</span>
+                                <span class="node-status-text">在线</span>
+                            </div>
+                            <div class="node-status-item">
+                                <span class="node-status-indicator online"></span>
+                                <span>防火墙 (192.168.1.254)</span>
+                                <span class="node-status-text">在线</span>
+                            </div>
+                            <div class="node-status-item">
+                                <span class="node-status-indicator warning"></span>
+                                <span>客户端 (192.168.1.10)</span>
+                                <span class="node-status-text">受攻击</span>
+                            </div>
+                            <div class="node-status-item">
+                                <span class="node-status-indicator offline"></span>
+                                <span>备份服务器 (192.168.1.2)</span>
+                                <span class="node-status-text">离线</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 学习统计图表 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📊</span>
+                            CTF学习进度
+                        </h3>
+                        <div class="progress-chart" id="progressChart"></div>
+                    </div>
+
+                    <!-- 实时监控面板 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">📡</span>
+                            系统监控面板
+                        </h3>
+                        <div class="monitor-panel" id="monitorPanel">
+                            <div class="monitor-item">
+                                <span class="monitor-label">CPU 使用率</span>
+                                <span class="monitor-value" id="cpuValue">0%</span>
+                            </div>
+                            <div class="monitor-item">
+                                <span class="monitor-label">内存使用</span>
+                                <span class="monitor-value" id="memValue">0%</span>
+                            </div>
+                            <div class="monitor-item">
+                                <span class="monitor-label">网络流量</span>
+                                <span class="monitor-value" id="netValue">0 KB/s</span>
+                            </div>
+                            <div class="monitor-item">
+                                <span class="monitor-label">连接数</span>
+                                <span class="monitor-value" id="connValue">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 六、网安学习小助手页面 -->
+            <section class="page" id="learn">
+                <div class="page-header">
+                    <h1 class="page-title">网安学习小助手</h1>
+                    <p class="page-subtitle">助力网安学习成长</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 网安专业名词解释 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📚</span>
+                            网安专业名词解释
+                        </h3>
+                        <div class="glossary" id="glossary"></div>
+                    </div>
+
+                    <!-- CTF 入门知识点 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🏆</span>
+                            CTF 入门知识点
+                        </h3>
+                        <div class="ctf-knowledge" id="ctfKnowledge"></div>
+                    </div>
+
+                    <!-- 学习打卡记录 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">✅</span>
+                            学习打卡记录
+                        </h3>
+                        <input type="text" id="checkinInput" class="input-field" placeholder="今天学习了什么？">
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="checkinBtn">打卡</button>
+                            <button class="btn btn-danger" id="clearCheckinBtn">清空记录</button>
+                        </div>
+                        <ul class="checkin-list" id="checkinList"></ul>
+                    </div>
+
+                    <!-- CTF题目收集 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📝</span>
+                            CTF题目收集
+                        </h3>
+                        <div class="ctf-problem-form">
+                            <input type="text" id="ctfProblemTitle" class="input-field" placeholder="题目名称">
+                            <select id="ctfProblemCategory" class="input-field">
+                                <option value="web">Web</option>
+                                <option value="crypto">Crypto</option>
+                                <option value="misc">Misc</option>
+                                <option value="reverse">Reverse</option>
+                                <option value="pwn">Pwn</option>
+                                <option value="forensics">Forensics</option>
+                            </select>
+                            <textarea id="ctfProblemDesc" class="textarea-field" placeholder="题目描述"></textarea>
+                            <textarea id="ctfProblemWriteup" class="textarea-field" placeholder="Writeup（解题思路）"></textarea>
+                            <input type="text" id="ctfProblemFlag" class="input-field" placeholder="Flag">
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="addCtfProblemBtn">添加题目</button>
+                                <button class="btn btn-secondary" id="clearCtfProblemsBtn">清空题目</button>
+                            </div>
+                        </div>
+                        <div class="ctf-problems-list" id="ctfProblemsList"></div>
+                    </div>
+
+                    <!-- 学习笔记 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📒</span>
+                            学习笔记
+                        </h3>
+                        <div class="note-form">
+                            <input type="text" id="noteTitle" class="input-field" placeholder="笔记标题">
+                            <textarea id="noteContent" class="textarea-field" placeholder="笔记内容"></textarea>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="addNoteBtn">添加笔记</button>
+                                <button class="btn btn-secondary" id="clearNotesBtn">清空笔记</button>
+                            </div>
+                        </div>
+                        <div class="notes-list" id="notesList"></div>
+                    </div>
+
+                    <!-- 学习时间统计 -->
+                    <div class="tool-card">
+                        <h3 class="card-title">
+                            <span class="card-icon">⏱️</span>
+                            学习时间统计
+                        </h3>
+                        <div class="study-timer">
+                            <div class="timer-display" id="timerDisplay">00:00:00</div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" id="startTimerBtn">开始</button>
+                                <button class="btn btn-secondary" id="pauseTimerBtn">暂停</button>
+                                <button class="btn btn-danger" id="resetTimerBtn">重置</button>
+                            </div>
+                        </div>
+                        <div class="study-stats" id="studyStats">
+                            <div class="stat-item">
+                                <span class="stat-label">今日学习：</span>
+                                <span class="stat-value" id="todayStudyTime">0小时0分钟</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">本周学习：</span>
+                                <span class="stat-value" id="weekStudyTime">0小时0分钟</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">总学习时间：</span>
+                                <span class="stat-value" id="totalStudyTime">0小时0分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 豆包AI助手页面 -->
+            <section class="page" id="doubao-ai">
+                <div class="page-header">
+                    <h1 class="page-title">豆包AI助手</h1>
+                    <p class="page-subtitle">基于豆包大模型的智能聊天</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <div class="tool-card full-width">
+                        <div class="doubao-chat-container">
+                            <div class="doubao-chat-messages" id="doubaoChatMessages"></div>
+                            <div class="doubao-chat-input-area">
+                                <textarea id="doubaoUserInput" class="doubao-textarea" placeholder="输入你的问题，按回车发送..."></textarea>
+                                <button class="btn btn-primary" id="doubaoSendBtn">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 七、文本工具页面 -->
+            <section class="page" id="text">
+                <div class="page-header">
+                    <h1 class="page-title">文本工具</h1>
+                    <p class="page-subtitle">文本处理与转换</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📊</span>字数统计</h3>
+                        <textarea id="wordCountInput" class="textarea-field" placeholder="请输入文本..."></textarea>
+                        <div class="word-stats">
+                            <div class="stat-item">字符数：<span id="charCount">0</span></div>
+                            <div class="stat-item">字数：<span id="wordCount">0</span></div>
+                            <div class="stat-item">行数：<span id="lineCount">0</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🔤</span>大小写转换</h3>
+                        <textarea id="caseInput" class="textarea-field" placeholder="请输入文本..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="toUpperBtn">转大写</button>
+                            <button class="btn btn-secondary" id="toLowerBtn">转小写</button>
+                        </div>
+                        <textarea id="caseOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🧹</span>去除空格</h3>
+                        <textarea id="trimInput" class="textarea-field" placeholder="请输入文本..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="trimAllBtn">去除所有空格</button>
+                            <button class="btn btn-secondary" id="trimExtraBtn">去除多余空格</button>
+                        </div>
+                        <textarea id="trimOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🔄</span>文本反转</h3>
+                        <textarea id="reverseInput" class="textarea-field" placeholder="请输入文本..."></textarea>
+                        <button class="btn btn-primary" id="reverseBtn">反转文本</button>
+                        <textarea id="reverseOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🔍</span>查找替换</h3>
+                        <textarea id="replaceInput" class="textarea-field" placeholder="请输入文本..."></textarea>
+                        <input type="text" id="findText" class="input-field" placeholder="查找内容">
+                        <input type="text" id="replaceText" class="input-field" placeholder="替换为">
+                        <button class="btn btn-primary" id="replaceBtn">替换</button>
+                        <textarea id="replaceOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📋</span>行排序</h3>
+                        <textarea id="sortInput" class="textarea-field" placeholder="请输入多行文本..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="sortAscBtn">升序</button>
+                            <button class="btn btn-secondary" id="sortDescBtn">降序</button>
+                        </div>
+                        <textarea id="sortOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 八、数学计算页面 -->
+            <section class="page" id="math">
+                <div class="page-header">
+                    <h1 class="page-title">数学计算</h1>
+                    <p class="page-subtitle">常用数学计算工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🔢</span>进制转换</h3>
+                        <input type="number" id="decimalInput" class="input-field" placeholder="请输入十进制数">
+                        <div class="base-results">
+                            <div class="base-item"><span>二进制：</span><input type="text" id="binaryResult" class="input-field result-field" readonly></div>
+                            <div class="base-item"><span>八进制：</span><input type="text" id="octalResult" class="input-field result-field" readonly></div>
+                            <div class="base-item"><span>十六进制：</span><input type="text" id="hexResult" class="input-field result-field" readonly></div>
+                        </div>
+                        <button class="btn btn-primary" id="convertBaseBtn">转换</button>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🎲</span>随机数生成</h3>
+                        <div class="random-options">
+                            <label class="option-label">最小值：<input type="number" id="randomMin" value="1" class="input-field"></label>
+                            <label class="option-label">最大值：<input type="number" id="randomMax" value="100" class="input-field"></label>
+                            <label class="option-label">生成数量：<input type="number" id="randomCount" value="1" class="input-field"></label>
+                        </div>
+                        <button class="btn btn-primary" id="generateRandomBtn">生成</button>
+                        <textarea id="randomOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📐</span>简单计算器</h3>
+                        <input type="text" id="calcDisplay" class="input-field" readonly placeholder="0">
+                        <div class="calc-buttons">
+                            <div class="calc-row">
+                                <button class="calc-btn" data-calc="7">7</button>
+                                <button class="calc-btn" data-calc="8">8</button>
+                                <button class="calc-btn" data-calc="9">9</button>
+                                <button class="calc-btn calc-op" data-calc="/">÷</button>
+                            </div>
+                            <div class="calc-row">
+                                <button class="calc-btn" data-calc="4">4</button>
+                                <button class="calc-btn" data-calc="5">5</button>
+                                <button class="calc-btn" data-calc="6">6</button>
+                                <button class="calc-btn calc-op" data-calc="*">×</button>
+                            </div>
+                            <div class="calc-row">
+                                <button class="calc-btn" data-calc="1">1</button>
+                                <button class="calc-btn" data-calc="2">2</button>
+                                <button class="calc-btn" data-calc="3">3</button>
+                                <button class="calc-btn calc-op" data-calc="-">-</button>
+                            </div>
+                            <div class="calc-row">
+                                <button class="calc-btn" data-calc="0">0</button>
+                                <button class="calc-btn" data-calc=".">.</button>
+                                <button class="calc-btn calc-equal" data-calc="=">=</button>
+                                <button class="calc-btn calc-op" data-calc="+">+</button>
+                            </div>
+                            <div class="calc-row">
+                                <button class="calc-btn calc-clear" data-calc="C">清除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📊</span>百分比计算</h3>
+                        <input type="number" id="percentNum" class="input-field" placeholder="数值">
+                        <input type="number" id="percentRate" class="input-field" placeholder="百分比（%）">
+                        <button class="btn btn-primary" id="calcPercentBtn">计算</button>
+                        <div class="percent-results">
+                            <div class="result-item">结果：<span id="percentResult">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 九、时间日期页面 -->
+            <section class="page" id="datetime">
+                <div class="page-header">
+                    <h1 class="page-title">时间日期</h1>
+                    <p class="page-subtitle">时间与日期处理</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">⏱️</span>时间戳转换</h3>
+                        <input type="number" id="timestampInput" class="input-field" placeholder="Unix时间戳（秒）">
+                        <button class="btn btn-primary" id="toDateTimeBtn">转日期时间</button>
+                        <input type="text" id="datetimeResult" class="input-field result-field" readonly>
+                        <hr style="margin: 16px 0; border-color: var(--border);">
+                        <input type="text" id="datetimeInput" class="input-field" placeholder="日期时间 (YYYY-MM-DD HH:mm:ss)">
+                        <button class="btn btn-primary" id="toTimestampBtn">转时间戳</button>
+                        <input type="text" id="timestampResult" class="input-field result-field" readonly>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📅</span>日期差计算</h3>
+                        <input type="date" id="date1" class="input-field">
+                        <input type="date" id="date2" class="input-field">
+                        <button class="btn btn-primary" id="calcDateDiffBtn">计算差值</button>
+                        <div class="date-results">
+                            <div class="result-item">相差天数：<span id="daysDiff">-</span></div>
+                            <div class="result-item">相差周数：<span id="weeksDiff">-</span></div>
+                            <div class="result-item">相差月数：<span id="monthsDiff">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🔮</span>日期推算</h3>
+                        <input type="date" id="baseDate" class="input-field">
+                        <div class="date-calc-options">
+                            <label class="option-label">
+                                <input type="radio" name="dateType" value="add" checked> 加上
+                            </label>
+                            <label class="option-label">
+                                <input type="radio" name="dateType" value="sub"> 减去
+                            </label>
+                        </div>
+                        <input type="number" id="dateAmount" class="input-field" value="1" placeholder="数量">
+                        <select id="dateUnit" class="input-field">
+                            <option value="days">天</option>
+                            <option value="weeks">周</option>
+                            <option value="months">月</option>
+                            <option value="years">年</option>
+                        </select>
+                        <button class="btn btn-primary" id="calcDateBtn">计算</button>
+                        <input type="text" id="dateCalcResult" class="input-field result-field" readonly>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">⏰</span>倒计时</h3>
+                        <input type="datetime-local" id="countdownTarget" class="input-field">
+                        <button class="btn btn-primary" id="startCountdownBtn">开始倒计时</button>
+                        <div class="countdown-display">
+                            <div class="countdown-item"><span id="cdDays">00</span><span class="cd-label">天</span></div>
+                            <div class="countdown-item"><span id="cdHours">00</span><span class="cd-label">时</span></div>
+                            <div class="countdown-item"><span id="cdMinutes">00</span><span class="cd-label">分</span></div>
+                            <div class="countdown-item"><span id="cdSeconds">00</span><span class="cd-label">秒</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十、颜色工具页面 -->
+            <section class="page" id="color">
+                <div class="page-header">
+                    <h1 class="page-title">颜色工具</h1>
+                    <p class="page-subtitle">颜色选择与转换</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🎨</span>颜色选择器</h3>
+                        <input type="color" id="colorPicker" value="#8b5cf6" style="width: 100%; height: 80px; border-radius: 12px; border: none; cursor: pointer;">
+                        <div class="color-formats">
+                            <div class="color-format-item"><span>HEX：</span><input type="text" id="colorHex" class="input-field result-field" readonly></div>
+                            <div class="color-format-item"><span>RGB：</span><input type="text" id="colorRgb" class="input-field result-field" readonly></div>
+                            <div class="color-format-item"><span>HSL：</span><input type="text" id="colorHsl" class="input-field result-field" readonly></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🌈</span>颜色格式转换</h3>
+                        <input type="text" id="colorInput" class="input-field" placeholder="输入颜色 (HEX/RGB)">
+                        <button class="btn btn-primary" id="convertColorBtn">转换</button>
+                        <div class="color-preview" id="colorPreview" style="width: 100%; height: 60px; border-radius: 12px; margin: 12px 0; background: #8b5cf6;"></div>
+                        <div class="color-results">
+                            <div class="result-item">HEX：<span id="convHex">-</span></div>
+                            <div class="result-item">RGB：<span id="convRgb">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🎭</span>互补色生成</h3>
+                        <input type="color" id="complementBase" value="#8b5cf6" style="width: 100%; height: 60px; border-radius: 12px; border: none; cursor: pointer;">
+                        <div class="color-palette" id="colorPalette">
+                            <div class="palette-item" style="background: #8b5cf6;">#8b5cf6</div>
+                            <div class="palette-item" style="background: #73d13d;">互补色</div>
+                        </div>
+                    </div>
+                    <div class="tool-card full-width">
+                        <h3 class="card-title"><span class="card-icon">🎯</span>常用配色方案</h3>
+                        <div class="preset-colors" id="presetColors"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十一、单位转换页面 -->
+            <section class="page" id="convert">
+                <div class="page-header">
+                    <h1 class="page-title">单位转换</h1>
+                    <p class="page-subtitle">常用单位转换工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📏</span>长度转换</h3>
+                        <input type="number" id="lengthInput" class="input-field" placeholder="输入数值">
+                        <select id="lengthFrom" class="input-field">
+                            <option value="m">米 (m)</option>
+                            <option value="km">千米 (km)</option>
+                            <option value="cm">厘米 (cm)</option>
+                            <option value="mm">毫米 (mm)</option>
+                            <option value="inch">英寸 (inch)</option>
+                            <option value="foot">英尺 (ft)</option>
+                            <option value="yard">码 (yd)</option>
+                            <option value="mile">英里 (mi)</option>
+                        </select>
+                        <select id="lengthTo" class="input-field">
+                            <option value="km">千米 (km)</option>
+                            <option value="m">米 (m)</option>
+                            <option value="cm">厘米 (cm)</option>
+                            <option value="mm">毫米 (mm)</option>
+                            <option value="inch">英寸 (inch)</option>
+                            <option value="foot">英尺 (ft)</option>
+                            <option value="yard">码 (yd)</option>
+                            <option value="mile">英里 (mi)</option>
+                        </select>
+                        <button class="btn btn-primary" id="convertLengthBtn">转换</button>
+                        <input type="text" id="lengthResult" class="input-field result-field" readonly>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">⚖️</span>重量转换</h3>
+                        <input type="number" id="weightInput" class="input-field" placeholder="输入数值">
+                        <select id="weightFrom" class="input-field">
+                            <option value="kg">千克 (kg)</option>
+                            <option value="g">克 (g)</option>
+                            <option value="mg">毫克 (mg)</option>
+                            <option value="t">吨 (t)</option>
+                            <option value="lb">磅 (lb)</option>
+                            <option value="oz">盎司 (oz)</option>
+                        </select>
+                        <select id="weightTo" class="input-field">
+                            <option value="g">克 (g)</option>
+                            <option value="kg">千克 (kg)</option>
+                            <option value="mg">毫克 (mg)</option>
+                            <option value="t">吨 (t)</option>
+                            <option value="lb">磅 (lb)</option>
+                            <option value="oz">盎司 (oz)</option>
+                        </select>
+                        <button class="btn btn-primary" id="convertWeightBtn">转换</button>
+                        <input type="text" id="weightResult" class="input-field result-field" readonly>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🌡️</span>温度转换</h3>
+                        <input type="number" id="tempInput" class="input-field" placeholder="输入温度">
+                        <select id="tempFrom" class="input-field">
+                            <option value="c">摄氏度 (°C)</option>
+                            <option value="f">华氏度 (°F)</option>
+                            <option value="k">开尔文 (K)</option>
+                        </select>
+                        <select id="tempTo" class="input-field">
+                            <option value="f">华氏度 (°F)</option>
+                            <option value="c">摄氏度 (°C)</option>
+                            <option value="k">开尔文 (K)</option>
+                        </select>
+                        <button class="btn btn-primary" id="convertTempBtn">转换</button>
+                        <input type="text" id="tempResult" class="input-field result-field" readonly>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">💾</span>数据大小转换</h3>
+                        <input type="number" id="dataInput" class="input-field" placeholder="输入数值">
+                        <select id="dataFrom" class="input-field">
+                            <option value="b">字节 (B)</option>
+                            <option value="kb">千字节 (KB)</option>
+                            <option value="mb">兆字节 (MB)</option>
+                            <option value="gb">吉字节 (GB)</option>
+                            <option value="tb">太字节 (TB)</option>
+                        </select>
+                        <select id="dataTo" class="input-field">
+                            <option value="kb">千字节 (KB)</option>
+                            <option value="mb">兆字节 (MB)</option>
+                            <option value="gb">吉字节 (GB)</option>
+                            <option value="tb">太字节 (TB)</option>
+                            <option value="b">字节 (B)</option>
+                        </select>
+                        <button class="btn btn-primary" id="convertDataBtn">转换</button>
+                        <input type="text" id="dataResult" class="input-field result-field" readonly>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十二、开发工具页面 -->
+            <section class="page" id="dev">
+                <div class="page-header">
+                    <h1 class="page-title">开发工具</h1>
+                    <p class="page-subtitle">开发者常用工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card full-width">
+                        <h3 class="card-title"><span class="card-icon">📋</span>JSON格式化</h3>
+                        <textarea id="jsonInput" class="textarea-field" placeholder="请输入JSON..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="formatJsonBtn">格式化</button>
+                            <button class="btn btn-secondary" id="compressJsonBtn">压缩</button>
+                            <button class="btn btn-secondary" id="copyJsonBtn">复制</button>
+                        </div>
+                        <textarea id="jsonOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🆔</span>UUID生成</h3>
+                        <input type="number" id="uuidCount" class="input-field" value="1" placeholder="生成数量" min="1" max="20">
+                        <button class="btn btn-primary" id="generateUuidBtn">生成UUID</button>
+                        <textarea id="uuidOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                    <div class="tool-card full-width">
+                        <h3 class="card-title"><span class="card-icon">🔍</span>正则测试</h3>
+                        <div class="regex-options">
+                            <input type="text" id="regexPattern" class="input-field" placeholder="正则表达式 (如: \d+)">
+                            <div class="regex-flags">
+                                <label class="option-label"><input type="checkbox" id="flagI" checked> i (忽略大小写)</label>
+                                <label class="option-label"><input type="checkbox" id="flagG"> g (全局匹配)</label>
+                                <label class="option-label"><input type="checkbox" id="flagM"> m (多行模式)</label>
+                            </div>
+                        </div>
+                        <textarea id="regexInput" class="textarea-field" placeholder="测试文本..."></textarea>
+                        <button class="btn btn-primary" id="testRegexBtn">测试</button>
+                        <div class="regex-results">
+                            <div class="result-item">匹配结果：<span id="regexMatchCount">0</span> 个</div>
+                            <div class="result-item">匹配内容：<span id="regexMatches">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📝</span>转义字符</h3>
+                        <textarea id="escapeInput" class="textarea-field" placeholder="输入文本..."></textarea>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="escapeBtn">转义</button>
+                            <button class="btn btn-secondary" id="unescapeBtn">反转义</button>
+                        </div>
+                        <textarea id="escapeOutput" class="textarea-field result-field" readonly></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十三、二维码工具页面 -->
+            <section class="page" id="qrcode">
+                <div class="page-header">
+                    <h1 class="page-title">二维码工具</h1>
+                    <p class="page-subtitle">二维码生成与解析</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📱</span>二维码生成</h3>
+                        <input type="text" id="qrText" class="input-field" placeholder="输入文本或URL">
+                        <div class="qr-options">
+                            <label class="option-label">尺寸：<input type="number" id="qrSize" value="200" class="input-field" min="100" max="500"></label>
+                        </div>
+                        <button class="btn btn-primary" id="generateQrBtn">生成二维码</button>
+                        <div class="qr-display" id="qrDisplay" style="display: flex; justify-content: center; padding: 20px; background: white; border-radius: 12px; min-height: 220px;">
+                            <p style="color: #999;">请输入内容生成二维码</p>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📷</span>二维码解析</h3>
+                        <div class="qr-upload" id="qrUpload" style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer;">
+                            <p style="color: var(--text-secondary);">点击或拖拽上传图片</p>
+                            <input type="file" id="qrFile" accept="image/*" style="display: none;">
+                        </div>
+                        <button class="btn btn-primary" id="parseQrBtn" style="margin-top: 12px;">解析二维码</button>
+                        <textarea id="qrResult" class="textarea-field result-field" readonly placeholder="解析结果"></textarea>
+                    </div>
+                    <div class="tool-card full-width">
+                        <h3 class="card-title"><span class="card-icon">✨</span>二维码样式预设</h3>
+                        <div class="qr-presets" id="qrPresets">
+                            <div class="qr-preset" data-url="https://github.com">GitHub</div>
+                            <div class="qr-preset" data-url="https://www.baidu.com">百度</div>
+                            <div class="qr-preset" data-url="https://www.bilibili.com">B站</div>
+                            <div class="qr-preset" data-url="Hello World!">文本</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十四、生活工具页面 -->
+            <section class="page" id="life">
+                <div class="page-header">
+                    <h1 class="page-title">生活工具</h1>
+                    <p class="page-subtitle">日常生活实用工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🏃</span>BMI指数计算</h3>
+                        <input type="number" id="bmiHeight" class="input-field" placeholder="身高（厘米）">
+                        <input type="number" id="bmiWeight" class="input-field" placeholder="体重（公斤）">
+                        <button class="btn btn-primary" id="calcBmiBtn">计算BMI</button>
+                        <div class="bmi-result" id="bmiResult" style="margin-top: 12px; padding: 16px; background: var(--bg-dark); border-radius: 12px;">
+                            <div class="result-item">BMI指数：<span id="bmiValue">-</span></div>
+                            <div class="result-item">健康状态：<span id="bmiStatus">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">🎂</span>生肖查询</h3>
+                        <input type="number" id="zodiacYear" class="input-field" placeholder="出生年份">
+                        <button class="btn btn-primary" id="getZodiacBtn">查询生肖</button>
+                        <div class="result-item" style="margin-top: 12px;">生肖：<span id="zodiacResult">-</span></div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">⭐</span>星座查询</h3>
+                        <input type="number" id="starMonth" class="input-field" placeholder="月份（1-12）">
+                        <input type="number" id="starDay" class="input-field" placeholder="日期（1-31）">
+                        <button class="btn btn-primary" id="getStarBtn">查询星座</button>
+                        <div class="result-item" style="margin-top: 12px;">星座：<span id="starResult">-</span></div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📅</span>工作日计算</h3>
+                        <input type="date" id="workStartDate" class="input-field">
+                        <input type="number" id="workDays" class="input-field" placeholder="工作天数">
+                        <button class="btn btn-primary" id="calcWorkBtn">计算日期</button>
+                        <div class="result-item" style="margin-top: 12px;">结果日期：<span id="workDateResult">-</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十五、金融工具页面 -->
+            <section class="page" id="finance">
+                <div class="page-header">
+                    <h1 class="page-title">金融工具</h1>
+                    <p class="page-subtitle">金融计算实用工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">💰</span>贷款计算器</h3>
+                        <input type="number" id="loanAmount" class="input-field" placeholder="贷款金额（元）">
+                        <input type="number" id="loanRate" class="input-field" placeholder="年利率（%）">
+                        <input type="number" id="loanMonths" class="input-field" placeholder="贷款期限（月）">
+                        <button class="btn btn-primary" id="calcLoanBtn">计算</button>
+                        <div class="loan-results" style="margin-top: 12px;">
+                            <div class="result-item">月供：<span id="monthlyPayment">-</span></div>
+                            <div class="result-item">总利息：<span id="totalInterest">-</span></div>
+                            <div class="result-item">还款总额：<span id="totalPayment">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">💸</span>个税计算器</h3>
+                        <input type="number" id="salary" class="input-field" placeholder="税前月薪（元）">
+                        <input type="number" id="insurance" class="input-field" placeholder="五险一金（元）">
+                        <input type="number" id="specialDeduct" class="input-field" placeholder="专项附加扣除（元）">
+                        <button class="btn btn-primary" id="calcTaxBtn">计算</button>
+                        <div class="tax-results" style="margin-top: 12px;">
+                            <div class="result-item">应纳税额：<span id="taxAmount">-</span></div>
+                            <div class="result-item">税后月薪：<span id="afterTaxSalary">-</span></div>
+                        </div>
+                    </div>
+                    <div class="tool-card">
+                        <h3 class="card-title"><span class="card-icon">📈</span>投资收益计算</h3>
+                        <input type="number" id="investAmount" class="input-field" placeholder="投资本金（元）">
+                        <input type="number" id="investRate" class="input-field" placeholder="年化收益率（%）">
+                        <input type="number" id="investYears" class="input-field" placeholder="投资年限">
+                        <button class="btn btn-primary" id="calcInvestBtn">计算</button>
+                        <div class="invest-results" style="margin-top: 12px;">
+                            <div class="result-item">收益金额：<span id="investProfit">-</span></div>
+                            <div class="result-item">本息总额：<span id="investTotal">-</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 十六、图片工具页面 -->
+            <section class="page" id="image">
+                <div class="page-header">
+                    <h1 class="page-title">图片工具</h1>
+                    <p class="page-subtitle">图片处理工具</p>
+                </div>
+                <div class="tools-grid">
+                    <div class="tool-card full-width">
+                        <h3 class="card-title"><span class="card-icon">🖼️</span>图片转Base64</h3>
+                        <div class="image-upload" id="imageUpload" style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; margin-bottom: 12px;">
+                            <p style="color: var(--text-secondary);">点击或拖拽上传图片</p>
+                            <input type="file" id="imageFile" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none; margin-bottom: 12px; text-align: center;">
+                            <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 12px;">
+                            <div style="margin-top: 8px; color: var(--text-secondary);">
+                                <span id="imgWidth">-</span> x <span id="imgHeight">-</span> | <span id="imgSize">-</span>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" id="convertBase64Btn" disabled>转Base64</button>
+                            <button class="btn btn-secondary" id="copyBase64Btn" disabled>复制Base64</button>
+                        </div>
+                        <textarea id="base64Output" class="textarea-field result-field" readonly placeholder="Base64结果"></textarea>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 科技背景粒子效果 -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- AI助手模块 -->
+    <script src="js/ai.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

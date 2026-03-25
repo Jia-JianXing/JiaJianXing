@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网安安全小白工具箱 Pro Max</title>
+    <title>工具箱 ProMax - 专业级在线工具集</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/ai.css">
 </head>
 <body>
     <!-- 动态背景 -->
@@ -17,8 +16,8 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-section">
-                    <span class="logo-icon">🛡️</span>
-                    <span class="logo-text">工具箱 Pro</span>
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">工具箱 ProMax</span>
                 </div>
             </div>
             
@@ -60,6 +59,10 @@
                         <li class="nav-item" data-page="doubao-ai">
                             <span class="nav-icon">🤖</span>
                             <span>豆包AI</span>
+                        </li>
+                        <li class="nav-item" data-page="password-center">
+                            <span class="nav-icon">🛡️</span>
+                            <span>安全中心</span>
                         </li>
                     </ul>
                 </div>
@@ -142,8 +145,8 @@
                 <span class="hamburger"></span>
             </button>
             <div class="mobile-logo">
-                <span class="logo-icon">🛡️</span>
-                <span>工具箱 Pro</span>
+                <span class="logo-icon">⚡</span>
+                <span>工具箱 ProMax</span>
             </div>
             <div class="mobile-clock" id="mobileClock">--:--:--</div>
         </header>
@@ -928,6 +931,194 @@
                             <div class="doubao-chat-input-area">
                                 <textarea id="doubaoUserInput" class="doubao-textarea" placeholder="输入你的问题，按回车发送..."></textarea>
                                 <button class="btn btn-primary" id="doubaoSendBtn">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 密码安全检测中心页面 -->
+            <section class="page" id="password-center">
+                <div class="page-header">
+                    <h1 class="page-title">密码安全检测中心</h1>
+                    <p class="page-subtitle">专业级密码强度分析与安全评估平台</p>
+                </div>
+                
+                <div class="tools-grid">
+                    <!-- 弱密码提醒模块 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">⚠️</span>
+                            弱密码安全警报
+                        </h3>
+                        <div class="weak-password-scroll">
+                            <div class="weak-password-list" id="weakPasswordListCenter">
+                                <!-- 动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 密码强度检测展示区 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🔐</span>
+                            密码强度检测
+                        </h3>
+                        <div class="strength-input-area">
+                            <div class="strength-input-wrapper">
+                                <input type="password" class="input-field strength-input" id="passwordInputCenter" placeholder="请输入密码进行安全检测...">
+                                <button class="btn btn-primary check-btn" onclick="checkPasswordCenter()">检测强度</button>
+                            </div>
+                        </div>
+                        <div class="strength-display">
+                            <div class="strength-bar-container">
+                                <div class="strength-bar-wrapper">
+                                    <div class="strength-bar" id="strengthBarCenter"></div>
+                                </div>
+                                <span class="strength-label" id="strengthLabelCenter">--</span>
+                            </div>
+                            <div class="strength-details">
+                                <div class="detail-item">
+                                    <div class="detail-value" id="lengthScoreCenter">0</div>
+                                    <div class="detail-label">长度评分</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-value" id="complexScoreCenter">0</div>
+                                    <div class="detail-label">复杂度</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-value" id="entropyScoreCenter">0</div>
+                                    <div class="detail-label">熵值</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-value" id="timeToCrackCenter">--</div>
+                                    <div class="detail-label">破解时间</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI助手终端屏幕区域 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🤖</span>
+                            AI Security Assistant
+                        </h3>
+                        <div class="terminal-card">
+                            <div class="terminal-header">
+                                <div class="terminal-dot red"></div>
+                                <div class="terminal-dot yellow"></div>
+                                <div class="terminal-dot green"></div>
+                                <span class="terminal-title">AI Security Assistant v2.0</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="terminal-content" id="terminalContentCenter">
+                                    <!-- 动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 网络拓扑可视化模块 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🌐</span>
+                            网络拓扑监控
+                        </h3>
+                        <div class="network-topology">
+                            <div class="network-node">
+                                <div class="node-icon">🖥️</div>
+                                <span class="node-label">本地主机</span>
+                            </div>
+                            <div class="network-connection"></div>
+                            <div class="network-node">
+                                <div class="node-icon">🔒</div>
+                                <span class="node-label">防火墙</span>
+                            </div>
+                            <div class="network-connection"></div>
+                            <div class="network-node">
+                                <div class="node-icon">☁️</div>
+                                <span class="node-label">云服务器</span>
+                            </div>
+                            <div class="network-connection"></div>
+                            <div class="network-node">
+                                <div class="node-icon">🗄️</div>
+                                <span class="node-label">数据库</span>
+                            </div>
+                        </div>
+                        <div class="network-actions">
+                            <button class="btn btn-secondary network-btn" onclick="scanNetwork()">
+                                <span>🔍</span> 扫描网络
+                            </button>
+                            <button class="btn btn-secondary network-btn" onclick="checkVulnerabilities()">
+                                <span>🛡️</span> 漏洞检测
+                            </button>
+                            <button class="btn btn-secondary network-btn" onclick="generateReport()">
+                                <span>📊</span> 生成报告
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 安全事件模拟区域 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">📋</span>
+                            安全事件日志
+                        </h3>
+                        <div class="events-terminal" id="eventsTerminalCenter">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 节点状态监控模块 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🟢</span>
+                            节点状态监控
+                        </h3>
+                        <div class="nodes-grid" id="nodesGridCenter">
+                            <!-- 动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- CTF学习进度模块 -->
+                    <div class="tool-card full-width">
+                        <h3 class="card-title">
+                            <span class="card-icon">🏆</span>
+                            CTF学习进度
+                        </h3>
+                        <div class="ctf-progress-container">
+                            <div class="ctf-circle-progress">
+                                <svg width="140" height="140">
+                                    <defs>
+                                        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#06b6d4"/>
+                                            <stop offset="100%" style="stop-color:#3b82f6"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ctf-circle-bg" cx="70" cy="70" r="60"/>
+                                    <circle class="ctf-circle-fill" id="progressCircle" cx="70" cy="70" r="60"/>
+                                </svg>
+                                <div class="ctf-circle-text">
+                                    <span class="ctf-percentage" id="ctfPercentage">0%</span>
+                                    <span class="ctf-label">完成度</span>
+                                </div>
+                            </div>
+                            <div class="ctf-details">
+                                <div class="ctf-stats">
+                                    <div class="ctf-stat">
+                                        <div class="ctf-stat-value" id="ctfSolved">0</div>
+                                        <div class="ctf-stat-label">已解决</div>
+                                    </div>
+                                    <div class="ctf-stat">
+                                        <div class="ctf-stat-value" id="ctfTotal">50</div>
+                                        <div class="ctf-stat-label">总题目</div>
+                                    </div>
+                                    <div class="ctf-stat">
+                                        <div class="ctf-stat-value" id="ctfRank">--</div>
+                                        <div class="ctf-stat-label">排名</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

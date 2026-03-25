@@ -341,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFinanceTools();
     initImageTools();
     initDoubaoAi();
+    initPasswordCenter();
     initKeyboardShortcuts();
     
     // 初始化通用AI助手（悬浮按钮 + 弹窗）
@@ -1426,6 +1427,313 @@ function initHttpStatusTable() {
     });
     html += '</tbody>';
     table.innerHTML = html;
+}
+
+// ============ 密码安全检测中心功能 ============
+
+// 弱密码数据
+const weakPasswordsCenter = [
+    { password: '123456', risk: 'high', desc: '全球最常用密码' },
+    { password: 'password', risk: 'high', desc: '默认弱密码' },
+    { password: 'admin123', risk: 'high', desc: '管理员默认密码' },
+    { password: 'qwerty', risk: 'high', desc: '键盘序列密码' },
+    { password: '111111', risk: 'high', desc: '纯数字密码' },
+    { password: 'abc123', risk: 'medium', desc: '简单字母数字组合' },
+    { password: 'letmein', risk: 'medium', desc: '常见英文短语' },
+    { password: 'welcome', risk: 'medium', desc: '欢迎词密码' },
+    { password: 'monkey', risk: 'medium', desc: '常见动物名' },
+    { password: 'dragon', risk: 'medium', desc: '常见神话词汇' }
+];
+
+// 初始化弱密码列表
+function initWeakPasswordsCenter() {
+    const list = document.getElementById('weakPasswordListCenter');
+    if (!list) return;
+    
+    const items = [...weakPasswordsCenter, ...weakPasswordsCenter];
+    
+    list.innerHTML = items.map(item => `
+        <div class="weak-password-item">
+            <span class="risk-badge ${item.risk}">${item.risk === 'high' ? '高危' : '中危'}</span>
+            <span class="password-text ${item.risk === 'high' ? 'high-risk' : ''}">${item.password}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">${item.desc}</span>
+        </div>
+    `).join('');
+}
+
+// 密码强度检测
+function checkPasswordCenter() {
+    const input = document.getElementById('passwordInputCenter');
+    if (!input) return;
+    
+    const password = input.value;
+    
+    if (!password) {
+        alert('请输入密码');
+        return;
+    }
+
+    const result = analyzePasswordCenter(password);
+    updateStrengthUICenter(result);
+    addTerminalLineCenter('info', `密码检测完成: ${result.level}级强度`);
+}
+
+function analyzePasswordCenter(password) {
+    let score = 0;
+    const checks = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        numbers: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password),
+        noCommon: !weakPasswordsCenter.some(wp => password.toLowerCase().includes(wp.password))
+    };
+
+    if (checks.length) score += 20;
+    if (password.length >= 12) score += 10;
+    if (checks.uppercase) score += 15;
+    if (checks.lowercase) score += 10;
+    if (checks.numbers) score += 15;
+    if (checks.special) score += 20;
+    if (checks.noCommon) score += 10;
+
+    let level = 'weak';
+    if (score >= 80) level = 'extreme';
+    else if (score >= 60) level = 'strong';
+    else if (score >= 40) level = 'medium';
+
+    const entropy = Math.log2(Math.pow(95, password.length)).toFixed(1);
+    const crackTime = estimateCrackTimeCenter(password);
+
+    return { score, level, checks, entropy, crackTime };
+}
+
+function estimateCrackTimeCenter(password) {
+    const charset = getCharsetSizeCenter(password);
+    const combinations = Math.pow(charset, password.length);
+    const guessesPerSecond = 1e10;
+    const seconds = combinations / guessesPerSecond / 2;
+
+    if (seconds < 1) return '瞬间';
+    if (seconds < 60) return Math.round(seconds) + '秒';
+    if (seconds < 3600) return Math.round(seconds / 60) + '分钟';
+    if (seconds < 86400) return Math.round(seconds / 3600) + '小时';
+    if (seconds < 31536000) return Math.round(seconds / 86400) + '天';
+    if (seconds < 31536000 * 100) return Math.round(seconds / 31536000) + '年';
+    return '数百年+';
+}
+
+function getCharsetSizeCenter(password) {
+    let size = 0;
+    if (/[a-z]/.test(password)) size += 26;
+    if (/[A-Z]/.test(password)) size += 26;
+    if (/[0-9]/.test(password)) size += 10;
+    if (/[^A-Za-z0-9]/.test(password)) size += 32;
+    return size || 1;
+}
+
+function updateStrengthUICenter(result) {
+    const bar = document.getElementById('strengthBarCenter');
+    const label = document.getElementById('strengthLabelCenter');
+    if (!bar || !label) return;
+    
+    const widths = { weak: 25, medium: 50, strong: 75, extreme: 100 };
+    const labels = { weak: '弱', medium: '中', strong: '强', extreme: '极高' };
+
+    bar.style.width = widths[result.level] + '%';
+    bar.className = 'strength-bar ' + result.level;
+    label.textContent = labels[result.level];
+    label.className = 'strength-label ' + result.level;
+
+    document.getElementById('lengthScoreCenter').textContent = result.score;
+    document.getElementById('complexScoreCenter').textContent = Object.values(result.checks).filter(Boolean).length;
+    document.getElementById('entropyScoreCenter').textContent = result.entropy;
+    document.getElementById('timeToCrackCenter').textContent = result.crackTime;
+}
+
+// AI终端
+const terminalMessagesCenter = [
+    { type: 'prompt', text: '> 系统初始化中...' },
+    { type: 'output', text: '[OK] 安全模块加载完成' },
+    { type: 'prompt', text: '> 启动密码分析引擎...' },
+    { type: 'output', text: '[OK] 引擎就绪，等待输入' },
+    { type: 'prompt', text: '> 加载弱密码数据库...' },
+    { type: 'output', text: '[OK] 已加载 10,000+ 常见弱密码' },
+    { type: 'prompt', text: '> AI助手已就绪' },
+    { type: 'output', text: '输入密码进行安全检测，或询问安全相关问题' }
+];
+
+function initTerminalCenter() {
+    const content = document.getElementById('terminalContentCenter');
+    if (!content) return;
+    
+    content.innerHTML = '';
+    
+    terminalMessagesCenter.forEach((msg, index) => {
+        setTimeout(() => {
+            addTerminalLineCenter(msg.type, msg.text);
+        }, index * 400);
+    });
+}
+
+function addTerminalLineCenter(type, text) {
+    const content = document.getElementById('terminalContentCenter');
+    if (!content) return;
+    
+    const line = document.createElement('div');
+    line.className = 'terminal-line';
+    line.style.animationDelay = '0s';
+    
+    const typeClass = type === 'prompt' ? 'prompt' : 'output';
+    const prefix = type === 'prompt' ? '$ ' : '';
+    
+    line.innerHTML = `<span class="${typeClass}">${prefix}${text}</span>`;
+    content.appendChild(line);
+    content.scrollTop = content.scrollHeight;
+}
+
+// 安全事件日志
+const securityEventsCenter = [
+    { time: '14:23:01', type: 'info', message: '系统启动完成' },
+    { time: '14:23:05', type: 'success', message: '防火墙规则加载成功' },
+    { time: '14:24:12', type: 'warning', message: '检测到端口扫描尝试: 192.168.1.100' },
+    { time: '14:25:33', type: 'danger', message: 'SSH登录失败: 用户 admin, IP: 10.0.0.55' },
+    { time: '14:26:01', type: 'info', message: '定时安全扫描启动' },
+    { time: '14:27:45', type: 'success', message: 'SSL证书验证通过' },
+    { time: '14:28:22', type: 'warning', message: '检测到异常流量模式' },
+    { time: '14:29:10', type: 'danger', message: 'SQL注入尝试被拦截' },
+    { time: '14:30:00', type: 'info', message: '系统健康检查完成' },
+    { time: '14:31:15', type: 'success', message: '所有服务运行正常' }
+];
+
+function initSecurityEventsCenter() {
+    const terminal = document.getElementById('eventsTerminalCenter');
+    if (!terminal) return;
+    
+    terminal.innerHTML = '';
+    
+    securityEventsCenter.forEach((event, index) => {
+        setTimeout(() => {
+            const line = document.createElement('div');
+            line.className = 'event-line';
+            line.style.animationDelay = `${index * 0.1}s`;
+            line.innerHTML = `
+                <span class="event-time">${event.time}</span>
+                <span class="event-type ${event.type}">${getTypeLabelCenter(event.type)}</span>
+                <span class="event-message">${event.message}</span>
+            `;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }, index * 300);
+    });
+}
+
+function getTypeLabelCenter(type) {
+    const labels = {
+        info: 'INFO',
+        warning: 'WARN',
+        danger: 'ALERT',
+        success: 'OK'
+    };
+    return labels[type] || type.toUpperCase();
+}
+
+// 节点状态监控
+const nodesCenter = [
+    { name: '主服务器', status: 'online', text: '运行正常' },
+    { name: '数据库节点', status: 'online', text: '连接稳定' },
+    { name: '缓存服务', status: 'warning', text: '负载较高' },
+    { name: 'API网关', status: 'online', text: '响应正常' },
+    { name: '日志服务', status: 'online', text: '记录中' },
+    { name: '监控节点', status: 'online', text: '监控中' },
+    { name: '备份服务', status: 'offline', text: '维护中' },
+    { name: '安全模块', status: 'online', text: '防护中' }
+];
+
+function initNodesCenter() {
+    const grid = document.getElementById('nodesGridCenter');
+    if (!grid) return;
+    
+    grid.innerHTML = nodesCenter.map(node => `
+        <div class="glass-card node-card">
+            <div class="status-indicator ${node.status}"></div>
+            <div class="node-info">
+                <div class="node-name">${node.name}</div>
+                <div class="node-status-text">${node.text}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// CTF进度
+function initCTFProgressCenter() {
+    const solved = 35;
+    const total = 50;
+    const percentage = Math.round((solved / total) * 100);
+    
+    setTimeout(() => {
+        const circle = document.getElementById('progressCircle');
+        if (!circle) return;
+        
+        const circumference = 2 * Math.PI * 60;
+        const offset = circumference - (percentage / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        
+        document.getElementById('ctfPercentage').textContent = percentage + '%';
+        document.getElementById('ctfSolved').textContent = solved;
+        document.getElementById('ctfRank').textContent = '#' + Math.floor(Math.random() * 100 + 1);
+    }, 500);
+}
+
+// 网络操作
+function scanNetwork() {
+    addTerminalLineCenter('prompt', '> 执行网络扫描...');
+    setTimeout(() => {
+        addTerminalLineCenter('output', '[OK] 发现 4 个活跃节点');
+        addSecurityEventCenter('info', '网络扫描完成，发现4个活跃节点');
+    }, 1000);
+}
+
+function checkVulnerabilities() {
+    addTerminalLineCenter('prompt', '> 启动漏洞扫描...');
+    setTimeout(() => {
+        addTerminalLineCenter('output', '[OK] 未发现高危漏洞');
+        addSecurityEventCenter('success', '漏洞扫描完成，系统安全');
+    }, 1500);
+}
+
+function generateReport() {
+    addTerminalLineCenter('prompt', '> 生成安全报告...');
+    setTimeout(() => {
+        addTerminalLineCenter('output', '[OK] 报告已生成: security_report_2024.pdf');
+        addSecurityEventCenter('info', '安全报告生成完成');
+    }, 1000);
+}
+
+function addSecurityEventCenter(type, message) {
+    const terminal = document.getElementById('eventsTerminalCenter');
+    if (!terminal) return;
+    
+    const now = new Date();
+    const time = now.toTimeString().slice(0, 8);
+    
+    const line = document.createElement('div');
+    line.className = 'event-line';
+    line.innerHTML = `
+        <span class="event-time">${time}</span>
+        <span class="event-type ${type}">${getTypeLabelCenter(type)}</span>
+        <span class="event-message">${message}</span>
+    `;
+    terminal.insertBefore(line, terminal.firstChild);
+}
+
+// 初始化密码安全检测中心
+function initPasswordCenter() {
+    initWeakPasswordsCenter();
+    initTerminalCenter();
+    initSecurityEventsCenter();
+    initNodesCenter();
+    initCTFProgressCenter();
 }
 
 // ============ 四、安全知识科普 ============

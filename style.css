@@ -2492,6 +2492,30 @@ body::before {
     font-size: 12px;
 }
 
+/* 环形进度条容器 */
+.ring-progress-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ring-progress-container .ring-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ring-progress-container .ring-progress-text {
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+    color: #60a5fa;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
 .learn-filters {
     display: flex;
     gap: 16px;
@@ -2575,20 +2599,25 @@ body::before {
 
 .learn-tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
 .tech-tool-card {
     position: relative;
     background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 28px 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 180px;
 }
 
 .tech-tool-card::before {
@@ -2614,9 +2643,10 @@ body::before {
 
 .tech-tool-icon {
     display: block;
-    font-size: 40px;
-    margin-bottom: 12px;
+    font-size: 48px;
+    margin-bottom: 16px;
     text-align: center;
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.4));
 }
 
 .tech-tool-name {
@@ -2625,13 +2655,17 @@ body::before {
     color: #e0e7ff;
     text-align: center;
     margin-bottom: 8px;
+    flex-shrink: 0;
 }
 
 .tech-tool-desc {
     font-size: 13px;
     color: #94a3b8;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.6;
+    flex: 1;
+    display: flex;
+    align-items: center;
 }
 
 /* 图标动画 */

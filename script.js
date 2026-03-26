@@ -2130,16 +2130,22 @@ function copyModalPassword() {
 // ============ 工具实现 - MD5/SHA ============
 function renderHashTool() {
     return `
+        <div style="margin-bottom:16px;padding:12px;background:rgba(245,158,11,0.1);border-left:3px solid var(--warning);border-radius:8px;">
+            <div style="font-weight:600;margin-bottom:4px;color:var(--warning);">⚠️ 安全提示</div>
+            <div style="font-size:13px;color:var(--text-secondary);">
+                MD5使用简化算法（仅用于教学演示），生产环境请使用SHA256
+            </div>
+        </div>
         <input type="text" class="modal-input" id="hashInput" placeholder="请输入文本">
         <div class="modal-btn-group">
             <button class="modal-btn modal-btn-primary" onclick="computeHash()">计算哈希</button>
         </div>
         <div style="margin-top:16px;">
-            <label style="display:block;margin-bottom:8px;color:var(--text-secondary);">MD5：</label>
+            <label style="display:block;margin-bottom:8px;color:var(--text-secondary);">MD5（简化实现）：</label>
             <input type="text" class="modal-input" id="md5Output" readonly>
         </div>
         <div style="margin-top:16px;">
-            <label style="display:block;margin-bottom:8px;color:var(--text-secondary);">SHA256：</label>
+            <label style="display:block;margin-bottom:8px;color:var(--text-secondary);">SHA256（标准安全算法）：</label>
             <input type="text" class="modal-input" id="shaOutput" readonly>
         </div>
     `;
@@ -2154,6 +2160,11 @@ async function computeHash() {
 }
 
 function simpleMd5(string) {
+    // ⚠️ 重要提示：这不是标准的 MD5 算法实现！
+    // 这是一个简化的哈希函数，仅用于教学演示
+    // 生产环境请使用标准的 SHA256 或其他安全哈希算法
+    // 本项目已提供安全的 SHA256 实现（使用 crypto.subtle.digest API）
+    
     let hash = 0;
     for (let i = 0; i < string.length; i++) {
         const char = string.charCodeAt(i);
@@ -2167,6 +2178,8 @@ function simpleMd5(string) {
 }
 
 async function sha256(text) {
+    // 使用标准的 Web Crypto API 实现 SHA256
+    // 这是生产级安全的哈希算法
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);

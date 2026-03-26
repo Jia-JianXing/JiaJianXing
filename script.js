@@ -1594,8 +1594,12 @@ function updateActiveCategory() {
         }
     });
     document.getElementById('contentTitle').textContent = categoryNames[currentCategory];
-    const toolCount = toolsData[currentCategory] ? toolsData[currentCategory].length : 0;
-    document.getElementById('toolCount').textContent = toolCount + ' 个工具';
+    if (currentCategory === 'ai') {
+        document.getElementById('toolCount').textContent = '';
+    } else {
+        const toolCount = toolsData[currentCategory] ? toolsData[currentCategory].length : 0;
+        document.getElementById('toolCount').textContent = toolCount + ' 个工具';
+    }
 }
 
 // ============ 渲染工具卡片 ============
@@ -3883,9 +3887,19 @@ let aiChatMessages = [];
 let isAiChatLoading = false;
 
 function openAiChat() {
+    const aiOverlay = document.getElementById('aiOverlay');
+    const aiModal = document.getElementById('aiModal');
     const aiChatContainer = document.getElementById('aiChatContainer');
     const toolsGrid = document.getElementById('toolsGrid');
     const contentHeader = document.getElementById('contentHeader');
+    
+    if (aiOverlay && aiModal) {
+        aiOverlay.classList.remove('show');
+        aiModal.classList.remove('show');
+    }
+    
+    currentCategory = 'ai';
+    updateActiveCategory();
     
     if (aiChatContainer && toolsGrid && contentHeader) {
         toolsGrid.style.display = 'none';

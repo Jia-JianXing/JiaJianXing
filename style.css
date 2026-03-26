@@ -2042,3 +2042,692 @@ body::before {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ============ 科技感高级样式 ============ */
+
+/* 玻璃拟态卡片 */
+.tech-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* 雷达扫描动画 */
+.radar-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.radar-bg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle, transparent 50%, rgba(14, 165, 233, 0.1) 100%),
+        conic-gradient(from 0deg, transparent 0deg, rgba(14, 165, 233, 0.3) 90deg, transparent 180deg);
+    border: 2px solid rgba(14, 165, 233, 0.5);
+    position: relative;
+}
+
+.radar-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(14, 165, 233, 0.6) 30deg, transparent 60deg);
+    animation: radarScan 4s linear infinite;
+}
+
+@keyframes radarScan {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.radar-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+/* 等宽科技字体 */
+.tech-font {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+/* 发光文字效果 */
+.glow-text {
+    text-shadow: 
+        0 0 10px var(--accent-primary),
+        0 0 20px var(--accent-primary),
+        0 0 40px var(--accent-primary);
+}
+
+/* 三栏布局 */
+.three-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+/* 进度条蓝紫渐变 */
+.progress-gradient {
+    background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+    background-size: 200% 100%;
+    animation: gradientMove 2s ease infinite;
+}
+
+@keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* 环形进度条 */
+.ring-progress {
+    transform: rotate(-90deg);
+}
+
+.ring-progress circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.ring-progress .bg {
+    stroke: rgba(55, 65, 81, 0.5);
+}
+
+.ring-progress .progress {
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.ring-progress .progress-green {
+    stroke: #10b981;
+}
+
+.ring-progress .progress-yellow {
+    stroke: #f59e0b;
+}
+
+.ring-progress .progress-red {
+    stroke: #ef4444;
+}
+
+/* 折线图容器 */
+.chart-container {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 拓扑图节点 */
+.topology-node {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.topology-node.router {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px var(--glow-primary);
+}
+
+.topology-node.device {
+    border-color: var(--accent-secondary);
+}
+
+.topology-node.suspicious {
+    border-color: #ef4444;
+    animation: pulse 1s infinite;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+/* 红绿灯卡片 */
+.traffic-card {
+    padding: 16px;
+    border-radius: 12px;
+    border-left: 4px solid;
+    background: var(--bg-card);
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.traffic-card.green {
+    border-left-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.traffic-card.yellow {
+    border-left-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.traffic-card.red {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Checklist 折叠面板 */
+.checklist-category {
+    margin-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.checklist-header {
+    padding: 12px 16px;
+    background: var(--bg-card);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.checklist-header:hover {
+    background: var(--bg-card-hover);
+}
+
+.checklist-content {
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* 时间轴样式 */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    box-shadow: 0 0 10px var(--glow-primary);
+}
+
+/* 应急流程步骤 */
+.emergency-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.emergency-step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* WiFi信号波纹 */
+.wifi-ripple {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.wifi-ripple::before,
+.wifi-ripple::after {
+    content: '';
+    position: absolute;
+    border: 3px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: wifiRipple 2s ease-out infinite;
+}
+
+.wifi-ripple::before {
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+}
+
+.wifi-ripple::after {
+    top: 10px;
+    left: 10px;
+    width: 60px;
+    height: 60px;
+    animation-delay: 0.5s;
+}
+
+@keyframes wifiRipple {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* 粒子效果 */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+    animation: particleFloat 3s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(-20px) translateX(10px);
+        opacity: 1;
+    }
+}
+
+/* 盾牌动画 */
+.shield-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.shield-icon {
+    font-size: 60px;
+    position: relative;
+    z-index: 2;
+}
+
+.shield-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 加载动画 */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 12px;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 8px;
+    background: rgba(55, 65, 81, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.loading-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 4px;
+    animation: loadingProgress 3s ease-in-out forwards;
+}
+
+@keyframes loadingProgress {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+/* 响应式三栏布局 */
+@media (max-width: 1024px) {
+    .three-column-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============ 网安实训模块样式 ============ */
+.learn-module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.learn-title-section {
+    flex: 1;
+}
+
+.learn-title {
+    font-family: 'Courier New', monospace;
+    font-size: 28px;
+    font-weight: bold;
+    color: #60a5fa;
+    margin: 0 0 8px 0;
+    text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    letter-spacing: 2px;
+}
+
+.learn-subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    margin: 0;
+}
+
+.learn-progress-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.learn-progress-text {
+    text-align: left;
+}
+
+.learn-progress-count {
+    color: #e0e7ff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.learn-progress-label {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.learn-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.learn-search-box {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.learn-search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e0e7ff;
+    font-size: 14px;
+}
+
+.learn-search-box input::placeholder {
+    color: #64748b;
+}
+
+.learn-filter-group {
+    display: flex;
+    gap: 12px;
+}
+
+.learn-filter-select {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #e0e7ff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.learn-filter-select:hover {
+    border-color: #3b82f6;
+}
+
+.learn-group {
+    margin-bottom: 32px;
+}
+
+.learn-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.learn-group-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #93c5fd;
+    margin: 0;
+}
+
+.learn-group-count {
+    font-size: 13px;
+    color: #64748b;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.learn-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.tech-tool-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.tech-tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.tech-tool-card:hover::before {
+    left: 100%;
+}
+
+.tech-tool-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+}
+
+.tech-tool-icon {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.tech-tool-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e0e7ff;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.tech-tool-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* 图标动画 */
+.icon-pulse .tech-tool-icon {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+.icon-bounce .tech-tool-icon {
+    animation: iconBounce 1.5s ease-in-out infinite;
+}
+
+.icon-wiggle .tech-tool-icon {
+    animation: iconWiggle 2s ease-in-out infinite;
+}
+
+.icon-swing .tech-tool-icon {
+    animation: iconSwing 2s ease-in-out infinite;
+}
+
+.icon-slither .tech-tool-icon {
+    animation: iconSlither 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes iconWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+@keyframes iconSwing {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+@keyframes iconSlither {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(3px) translateY(-2px); }
+    75% { transform: translateX(-3px) translateY(2px); }
+}
+
+/* WiFi扩展动画 */
+@keyframes wifiExpand {
+    0% {
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+    100% {
+        width: 100px;
+        height: 100px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+}
+
+/* 粒子漂浮动画 */
+@keyframes particleFloat {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-20px) translateX(10px);
+        opacity: 1;
+    }
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+/* 加载条动画 */
+@keyframes loadingBar {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}

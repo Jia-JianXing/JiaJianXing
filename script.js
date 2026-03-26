@@ -1077,6 +1077,16 @@ const toolsData = {
             knowledge: 'PWN利用二进制漏洞',
             ctfTip: 'CTF.Pwn题需要PWN',
             pitfalls: '注意栈溢出原理'
+        },
+        {
+            id: 'social-engineering',
+            name: '社会工程',
+            icon: '🎭',
+            description: '社会工程学防御',
+            usage: '学习识别社会工程攻击',
+            knowledge: '社会工程利用人性弱点',
+            ctfTip: 'CTF.Misc题可能有社工',
+            pitfalls: '保持警惕，不轻信'
         }
     ],
     life: [
@@ -1241,16 +1251,6 @@ const toolsData = {
             knowledge: '强密码是安全的第一道防线',
             ctfTip: 'CTF中弱密码是常见考点',
             pitfalls: '不要用相同密码'
-        },
-        {
-            id: 'social-engineering',
-            name: '社会工程',
-            icon: '🎭',
-            description: '社会工程学防御',
-            usage: '学习识别社会工程攻击',
-            knowledge: '社会工程利用人性弱点',
-            ctfTip: 'CTF.Misc题可能有社工',
-            pitfalls: '保持警惕，不轻信'
         },
         {
             id: 'malware',
@@ -1612,6 +1612,14 @@ function renderTools() {
         return;
     }
     
+    if (currentCategory === 'learn') {
+        renderLearnModule(grid);
+    } else {
+        renderNormalCategory(grid);
+    }
+}
+
+function renderNormalCategory(grid) {
     let tools = [...toolsData[currentCategory]];
     
     let favoriteTools = tools.filter(t => favorites.includes(t.id));
@@ -1622,32 +1630,169 @@ function renderTools() {
     tools.forEach(tool => {
         const isFavorite = favorites.includes(tool.id);
         const isHot = tool.id === 'doubao-ai';
-        html += `
-            <div class="tool-card ${isFavorite ? 'favorite' : ''}" 
-                 data-tool-id="${tool.id}"
-                 onclick="handleToolClick(event, '${tool.id}')"
-                 ondblclick="handleToolDoubleClick('${tool.id}')">
-                <button class="tool-favorite-btn" onclick="event.stopPropagation(); toggleFavorite('${tool.id}')">
-                    ${isFavorite ? '⭐' : '☆'}
-                </button>
-                <span class="tool-icon">${tool.icon}</span>
-                <div class="tool-name">${tool.name}</div>
-                <div class="tool-card-tooltip">
-                    <div class="tooltip-title">
-                        <span class="tooltip-icon">${tool.icon}</span>
-                        ${tool.name}
-                        ${isHot ? '<span class="tooltip-hot">HOT</span>' : ''}
-                    </div>
-                    <div class="tooltip-desc">${tool.description}</div>
-                    <div class="tooltip-knowledge">
-                        💡 ${tool.knowledge}
-                    </div>
-                </div>
-            </div>
-        `;
+        html += renderToolCard(tool, isFavorite, isHot);
     });
     
     grid.innerHTML = html;
+}
+
+function renderLearnModule(grid) {
+    const learnGroups = {
+        '基础入门': ['glossary', 'linux-basic', 'python-cheat'],
+        'Web安全': ['sql-injection', 'xss-learn', 'csrf-learn', 'file-upload'],
+        '进阶实战': ['vulnerability', 'steganography', 'reverse-eng', 'pwning', 'social-engineering'],
+        '竞赛专区': ['ctf-knowledge']
+    };
+    
+    let html = `
+        <div class="learn-module-header">
+            <div class="learn-title-section">
+                <h2 class="learn-title">网安实训中心</h2>
+                <p class="learn-subtitle">从零基础到实战专家</p>
+            </div>
+            <div class="learn-progress-section">
+                <div class="ring-progress-container" style="width:80px;height:80px;">
+                    <svg class="ring-progress" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="8"/>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="8" 
+                                stroke-dasharray="283" stroke-dashoffset="141" 
+                                stroke-linecap="round" transform="rotate(-90 50 50)"/>
+                    </svg>
+                    <div class="ring-progress-text" style="font-size:16px;">50%</div>
+                </div>
+                <div class="learn-progress-text">
+                    <div class="learn-progress-count">6/12 已完成</div>
+                    <div class="learn-progress-label">实训进度</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="learn-filters">
+            <div class="learn-search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="learnSearch" placeholder="搜索工具/知识点..." oninput="filterLearnTools()">
+            </div>
+            <div class="learn-filter-group">
+                <select id="difficultyFilter" class="learn-filter-select" onchange="filterLearnTools()">
+                    <option value="all">全部难度</option>
+                    <option value="beginner">入门</option>
+                    <option value="intermediate">进阶</option>
+                    <option value="expert">专家</option>
+                </select>
+                <select id="typeFilter" class="learn-filter-select" onchange="filterLearnTools()">
+                    <option value="all">全部类型</option>
+                    <option value="theory">理论</option>
+                    <option value="practice">实操</option>
+                </select>
+            </div>
+        </div>
+    `;
+    
+    for (const [groupName, toolIds] of Object.entries(learnGroups)) {
+        const groupTools = toolIds.map(id => toolsData.learn.find(t => t.id === id)).filter(Boolean);
+        
+        html += `
+            <div class="learn-group" data-group="${groupName}">
+                <div class="learn-group-header">
+                    <h3 class="learn-group-title">${groupName}</h3>
+                    <span class="learn-group-count">${groupTools.length} 个工具</span>
+                </div>
+                <div class="learn-tools-grid">
+        `;
+        
+        groupTools.forEach(tool => {
+            const isFavorite = favorites.includes(tool.id);
+            html += renderTechToolCard(tool, isFavorite);
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    }
+    
+    grid.innerHTML = html;
+}
+
+function renderToolCard(tool, isFavorite, isHot) {
+    return `
+        <div class="tool-card ${isFavorite ? 'favorite' : ''}" 
+             data-tool-id="${tool.id}"
+             onclick="handleToolClick(event, '${tool.id}')"
+             ondblclick="handleToolDoubleClick('${tool.id}')">
+            <button class="tool-favorite-btn" onclick="event.stopPropagation(); toggleFavorite('${tool.id}')">
+                ${isFavorite ? '⭐' : '☆'}
+            </button>
+            <span class="tool-icon">${tool.icon}</span>
+            <div class="tool-name">${tool.name}</div>
+            <div class="tool-card-tooltip">
+                <div class="tooltip-title">
+                    <span class="tooltip-icon">${tool.icon}</span>
+                    ${tool.name}
+                    ${isHot ? '<span class="tooltip-hot">HOT</span>' : ''}
+                </div>
+                <div class="tooltip-desc">${tool.description}</div>
+                <div class="tooltip-knowledge">
+                    💡 ${tool.knowledge}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderTechToolCard(tool, isFavorite) {
+    const iconAnimations = {
+        'glossary': 'icon-pulse',
+        'ctf-knowledge': 'icon-bounce',
+        'vulnerability': 'icon-wiggle',
+        'linux-basic': 'icon-swing',
+        'python-cheat': 'icon-slither',
+        'steganography': 'icon-pulse',
+        'social-engineering': 'icon-pulse',
+        'reverse-eng': 'icon-wiggle',
+        'pwning': 'icon-bounce',
+        'sql-injection': 'icon-pulse',
+        'xss-learn': 'icon-pulse',
+        'csrf-learn': 'icon-pulse',
+        'file-upload': 'icon-pulse'
+    };
+    
+    const animationClass = iconAnimations[tool.id] || '';
+    
+    return `
+        <div class="tech-tool-card ${animationClass}" 
+             data-tool-id="${tool.id}"
+             data-tool-name="${tool.name}"
+             onclick="handleToolClick(event, '${tool.id}')"
+             ondblclick="handleToolDoubleClick('${tool.id}')">
+            <button class="tool-favorite-btn" onclick="event.stopPropagation(); toggleFavorite('${tool.id}')">
+                ${isFavorite ? '⭐' : '☆'}
+            </button>
+            <span class="tech-tool-icon">${tool.icon}</span>
+            <div class="tech-tool-name">${tool.name}</div>
+            <div class="tech-tool-desc">${tool.description}</div>
+        </div>
+    `;
+}
+
+function filterLearnTools() {
+    const searchTerm = document.getElementById('learnSearch')?.value.toLowerCase() || '';
+    const difficulty = document.getElementById('difficultyFilter')?.value || 'all';
+    const type = document.getElementById('typeFilter')?.value || 'all';
+    
+    const toolCards = document.querySelectorAll('.tech-tool-card');
+    const groups = document.querySelectorAll('.learn-group');
+    
+    toolCards.forEach(card => {
+        const toolName = card.getAttribute('data-tool-name').toLowerCase();
+        const matchesSearch = toolName.includes(searchTerm);
+        card.style.display = matchesSearch ? '' : 'none';
+    });
+    
+    groups.forEach(group => {
+        const visibleCards = group.querySelectorAll('.tech-tool-card[style=""]');
+        group.style.display = visibleCards.length > 0 ? '' : 'none';
+    });
 }
 
 // ============ 单击显示抽屉 ============
@@ -1836,6 +1981,45 @@ function renderToolContent(toolId) {
             break;
         case 'checklist':
             html = renderChecklist();
+            break;
+        case 'browser-safety':
+            html = renderBrowserSafety();
+            break;
+        case 'data-protection':
+            html = renderDataProtection();
+            break;
+        case 'emergency-response':
+            html = renderEmergencyResponse();
+            break;
+        case 'linux-basic':
+            html = renderLinuxBasic();
+            break;
+        case 'python-cheat':
+            html = renderPythonCheat();
+            break;
+        case 'file-upload':
+            html = renderFileUpload();
+            break;
+        case 'steganography':
+            html = renderSteganography();
+            break;
+        case 'social-engineering':
+            html = renderSocialEngineering();
+            break;
+        case 'pwning':
+            html = renderPwning();
+            break;
+        case 'reverse-eng':
+            html = renderReverseEng();
+            break;
+        case 'sql-injection':
+            html = renderSqlInjection();
+            break;
+        case 'xss-learn':
+            html = renderXssLearn();
+            break;
+        case 'csrf-learn':
+            html = renderCsrfLearn();
             break;
         case 'hash-collision':
             html = renderHashCollision();
@@ -2603,68 +2787,1563 @@ function renderVulnerability() {
     return html;
 }
 
-// ============ 工具实现 - 钓鱼识别 ============
+// ============ 工具实现 - 钓鱼识别（高级版） ============
 function renderPhishing() {
-    const tips = [
-        '检查URL是否正确，注意拼写错误',
-        '查看SSL证书，确保是HTTPS',
-        '不要点击邮件中的陌生链接',
-        '不轻易输入账号密码',
-        '注意网站的视觉细节差异',
-        '官方网站不会索要密码'
-    ];
-    
-    let html = '<ul style="list-style:none;padding:0;">';
-    tips.forEach(t => {
-        html += `<li style="background:var(--bg-card);padding:16px;border-radius:10px;margin-bottom:12px;border:1px solid var(--border-color);border-left:3px solid var(--warning);">⚠️ ${t}</li>`;
-    });
-    html += '</ul>';
-    return html;
+    return `
+        <div class="tech-card" style="padding:20px;position:relative;overflow:hidden;">
+            <div id="phishingLoading" class="loading-overlay" style="display:none;">
+                <div class="tech-font glow-text" style="font-size:18px;">正在拉取全球钓鱼情报库...</div>
+                <div class="loading-progress">
+                    <div class="loading-progress-fill"></div>
+                </div>
+            </div>
+            
+            <h2 class="tech-font glow-text" style="text-align:center;margin-bottom:24px;font-size:20px;">
+                🔍 钓鱼威胁实时检测
+            </h2>
+            
+            <div class="radar-container" style="margin-bottom:24px;">
+                <div class="radar-bg">
+                    <div class="radar-scan"></div>
+                </div>
+                <div class="radar-dot" style="top:30%;left:60%;"></div>
+                <div class="radar-dot" style="top:70%;left:40%;animation-delay:0.5s;"></div>
+                <div class="radar-dot" style="top:50%;left:75%;animation-delay:1s;"></div>
+            </div>
+            
+            <div class="three-column-layout">
+                <div class="chart-container">
+                    <h4 style="margin-bottom:12px;color:var(--text-secondary);">📊 实时钓鱼趋势</h4>
+                    <div style="height:120px;display:flex;align-items:flex-end;gap:8px;">
+                        <div style="width:100%;height:40%;background:linear-gradient(180deg,#10b981,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:60%;background:linear-gradient(180deg,#10b981,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:50%;background:linear-gradient(180deg,#f59e0b,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:80%;background:linear-gradient(180deg,#ef4444,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:70%;background:linear-gradient(180deg,#ef4444,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:90%;background:linear-gradient(180deg,#ef4444,transparent);border-radius:4px;"></div>
+                        <div style="width:100%;height:75%;background:linear-gradient(180deg,#f59e0b,transparent);border-radius:4px;"></div>
+                    </div>
+                    <p style="text-align:center;color:var(--text-secondary);margin-top:8px;font-size:12px;">近7天钓鱼攻击数量</p>
+                </div>
+                
+                <div class="chart-container">
+                    <h4 style="margin-bottom:12px;color:var(--text-secondary);">🎯 钓鱼样本识别</h4>
+                    <input type="text" class="modal-input" id="phishingUrl" placeholder="粘贴URL或上传邮件截图">
+                    <input type="file" class="modal-input" id="phishingFile" accept="image/*" style="font-size:12px;">
+                    <div class="modal-btn-group" style="margin-top:8px;">
+                        <button class="modal-btn modal-btn-primary" onclick="detectPhishing()">威胁狩猎</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h4 style="margin-bottom:12px;color:var(--text-secondary);">⚠️ 威胁等级</h4>
+                    <div style="display:flex;justify-content:center;margin-bottom:16px;">
+                        <svg class="ring-progress" width="120" height="120">
+                            <circle class="bg" cx="60" cy="60" r="50"></circle>
+                            <circle class="progress progress-red" cx="60" cy="60" r="50" 
+                                stroke-dasharray="314" stroke-dashoffset="34.54"></circle>
+                        </svg>
+                        <div style="position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                            <span style="font-size:28px;font-weight:800;">89</span>
+                            <span style="font-size:12px;color:var(--text-secondary);">/100</span>
+                        </div>
+                    </div>
+                    <div id="phishingResult" style="text-align:center;">
+                        <span style="color:#ef4444;font-weight:600;">🔴 仿冒银行</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container" style="margin-top:16px;">
+                <h4 style="margin-bottom:12px;color:var(--text-secondary);">📋 钓鱼特征拆解</h4>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+                    <div class="traffic-card red">
+                        <strong>❌ 域名拼写错误</strong>
+                    </div>
+                    <div class="traffic-card red">
+                        <strong>❌ 伪造SSL证书</strong>
+                    </div>
+                    <div class="traffic-card yellow">
+                        <strong>⚠️ 诱导点击按钮</strong>
+                    </div>
+                    <div class="traffic-card red">
+                        <strong>❌ 索要敏感信息</strong>
+                    </div>
+                </div>
+                <p style="margin-top:16px;color:var(--text-secondary);text-align:center;">
+                    💡 安全加固建议：立即断开链接并上报至安全团队
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function detectPhishing() {
+    const loading = document.getElementById('phishingLoading');
+    if (loading) {
+        loading.style.display = 'flex';
+        setTimeout(() => {
+            loading.style.display = 'none';
+            const result = document.getElementById('phishingResult');
+            if (result) {
+                result.innerHTML = '<span style="color:#10b981;font-weight:600;">🟢 安全链接</span>';
+            }
+        }, 3000);
+    }
 }
 
 // ============ 工具实现 - WiFi安全 ============
 function renderWifiSafety() {
-    const tips = [
-        '不在公共WiFi下进行网银支付',
-        '不连接无密码的WiFi',
-        '使用手机流量进行敏感操作',
-        '关闭自动连接WiFi功能',
-        '使用VPN加密网络流量',
-        '家里WiFi使用WPA3加密'
-    ];
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#a5b4fc;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(129,140,248,0.5);">
+                📡 WiFi安全战场态势感知
+            </h3>
+            
+            <div class="wifi-signal-container" style="display:flex;align-items:center;justify-content:center;margin:20px 0;">
+                <div class="wifi-wave" style="position:relative;width:100px;height:100px;">
+                    <div class="wifi-circle" style="position:absolute;border:3px solid #818cf8;border-radius:50%;opacity:0.8;animation:wifiExpand 2s ease-out infinite;"></div>
+                    <div class="wifi-circle" style="position:absolute;border:3px solid #818cf8;border-radius:50%;opacity:0.8;animation:wifiExpand 2s ease-out 0.5s infinite;"></div>
+                    <div class="wifi-circle" style="position:absolute;border:3px solid #818cf8;border-radius:50%;opacity:0.8;animation:wifiExpand 2s ease-out 1s infinite;"></div>
+                    <div style="position:absolute;width:20px;height:20px;background:#818cf8;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 20px #818cf8;"></div>
+                </div>
+                <div style="margin-left:20px;">
+                    <div style="color:#e0e7ff;font-size:14px;">连接设备数</div>
+                    <div class="device-count" style="color:#818cf8;font-size:32px;font-weight:bold;font-family:'Courier New',monospace;">5</div>
+                </div>
+            </div>
+            
+            <h4 style="color:#c7d2fe;margin:20px 0 10px;">🔍 网络拓扑侦查</h4>
+            <div class="topology-container" style="background:rgba(0,0,0,0.3);border-radius:12px;padding:20px;margin-bottom:20px;">
+                <svg width="100%" height="200" viewBox="0 0 400 200">
+                    <circle cx="200" cy="50" r="25" fill="#10b981" stroke="#34d399" stroke-width="2"/>
+                    <text x="200" y="55" text-anchor="middle" fill="white" font-size="12">路由器</text>
+                    
+                    <line x1="200" y1="75" x2="100" y2="150" stroke="#60a5fa" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="200" y1="75" x2="200" y2="150" stroke="#60a5fa" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="200" y1="75" x2="300" y2="150" stroke="#60a5fa" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <circle cx="100" cy="150" r="20" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+                    <text x="100" y="155" text-anchor="middle" fill="white" font-size="10">手机</text>
+                    
+                    <circle cx="200" cy="150" r="20" fill="#ef4444" stroke="#f87171" stroke-width="2">
+                        <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                    <text x="200" y="155" text-anchor="middle" fill="white" font-size="10">可疑</text>
+                    
+                    <circle cx="300" cy="150" r="20" fill="#3b82f6" stroke="#60a5fa" stroke-width="2"/>
+                    <text x="300" y="155" text-anchor="middle" fill="white" font-size="10">电脑</text>
+                </svg>
+            </div>
+            
+            <button class="modal-btn modal-btn-primary" onclick="scanWifiSafety()" style="width:100%;margin-bottom:20px;">
+                🛡️ 启动WiFi安全扫描
+            </button>
+            
+            <div id="wifiScanResult"></div>
+        </div>
+    `;
+}
+
+function scanWifiSafety() {
+    const resultDiv = document.getElementById('wifiScanResult');
+    if (!resultDiv) return;
     
-    let html = '<ul style="list-style:none;padding:0;">';
-    tips.forEach(t => {
-        html += `<li style="background:var(--bg-card);padding:16px;border-radius:10px;margin-bottom:12px;border:1px solid var(--border-color);border-left:3px solid var(--accent-secondary);">📶 ${t}</li>`;
-    });
-    html += '</ul>';
-    return html;
+    resultDiv.innerHTML = `
+        <div style="text-align:center;padding:20px;">
+            <div style="color:#a5b4fc;font-size:16px;margin-bottom:10px;">🔄 正在扫描无线网络环境...</div>
+            <div style="width:100%;height:8px;background:rgba(0,0,0,0.3);border-radius:4px;overflow:hidden;">
+                <div style="width:0%;height:100%;background:linear-gradient(90deg,#818cf8,#a855f7);animation:loadingBar 3s ease-out forwards;"></div>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        resultDiv.innerHTML = `
+            <div style="margin-top:10px;">
+                <h4 style="color:#c7d2fe;margin-bottom:15px;">📊 安全扫描报告</h4>
+                
+                <div class="traffic-light-card safe" style="margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:20px;height:20px;background:#10b981;border-radius:50%;box-shadow:0 0 10px #10b981;"></div>
+                        <span style="color:#d1fae5;font-weight:600;">加密方式：WPA3-PSK</span>
+                    </div>
+                    <div style="color:#a7f3d0;font-size:12px;margin-top:5px;">✓ 使用当前最安全的加密协议</div>
+                </div>
+                
+                <div class="traffic-light-card warning" style="margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:20px;height:20px;background:#f59e0b;border-radius:50%;box-shadow:0 0 10px #f59e0b;"></div>
+                        <span style="color:#fef3c7;font-weight:600;">弱密码风险</span>
+                    </div>
+                    <div style="color:#fcd34d;font-size:12px;margin-top:5px;">⚠ 建议更换为至少16位的强密码</div>
+                </div>
+                
+                <div class="traffic-light-card safe" style="margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:20px;height:20px;background:#10b981;border-radius:50%;box-shadow:0 0 10px #10b981;"></div>
+                        <span style="color:#d1fae5;font-weight:600;">隐藏SSID：已禁用</span>
+                    </div>
+                    <div style="color:#a7f3d0;font-size:12px;margin-top:5px;">✓ 网络可见性正常</div>
+                </div>
+                
+                <div class="traffic-light-card danger" style="margin-bottom:10px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:20px;height:20px;background:#ef4444;border-radius:50%;box-shadow:0 0 10px #ef4444;"></div>
+                        <span style="color:#fee2e2;font-weight:600;">DHCP劫持：检测到异常</span>
+                    </div>
+                    <div style="color:#fca5a5;font-size:12px;margin-top:5px;">✗ 发现未知DHCP服务器，建议立即排查</div>
+                </div>
+                
+                <div class="tech-card" style="margin-top:20px;background:rgba(16,185,129,0.1);">
+                    <h5 style="color:#6ee7b7;margin-bottom:10px;">🛡️ 安全加固建议</h5>
+                    <ul style="list-style:none;padding:0;color:#a7f3d0;font-size:13px;">
+                        <li style="margin-bottom:5px;">• 立即更换WiFi密码</li>
+                        <li style="margin-bottom:5px;">• 检查并移除未知连接设备</li>
+                        <li style="margin-bottom:5px;">• 重启路由器清除异常配置</li>
+                        <li>• 启用MAC地址过滤</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }, 3000);
 }
 
 // ============ 工具实现 - 安全清单 ============
 function renderChecklist() {
-    const items = [
-        '使用强密码（至少12位）',
-        '不同账号使用不同密码',
-        '开启双重验证',
-        '定期更换重要密码',
-        '不随意点击陌生链接',
-        '不下载未知来源软件',
-        '定期更新系统补丁',
-        '安装杀毒软件',
-        '不在公共WiFi进行敏感操作',
-        '警惕中奖、紧急通知等诈骗'
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#064e3b 0%,#065f46 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#6ee7b7;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(16,185,129,0.5);">
+                ✅ 安全任务清单系统
+            </h3>
+            
+            <div style="text-align:center;margin:20px 0;">
+                <div class="ring-progress-container" style="position:relative;width:120px;height:120px;margin:0 auto;">
+                    <svg class="ring-progress" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(16,185,129,0.2)" stroke-width="8"/>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#10b981" stroke-width="8" 
+                                stroke-dasharray="283" stroke-dashoffset="170" 
+                                stroke-linecap="round" transform="rotate(-90 50 50)"/>
+                    </svg>
+                    <div class="ring-progress-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#6ee7b7;">60%</div>
+                </div>
+                <div style="color:#a7f3d0;font-size:14px;margin-top:10px;">安全成熟度：进阶</div>
+            </div>
+            
+            <div class="checklist-container">
+                <div class="checklist-item-header" onclick="toggleChecklistCategory('terminal')" style="cursor:pointer;">
+                    <span style="display:flex;align-items:center;gap:8px;">
+                        <span>💻</span>
+                        <span style="font-weight:600;">终端安全</span>
+                    </span>
+                    <span style="font-size:12px;color:#34d399;">2/3</span>
+                </div>
+                <div id="checklist-terminal" class="checklist-item-content" style="display:block;">
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">使用强密码（至少12位）</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">定期更新系统补丁</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" style="width:18px;height:18px;accent-color:#10b981;">
+                        <span>安装杀毒软件并定期扫描</span>
+                    </label>
+                </div>
+                
+                <div class="checklist-item-header" onclick="toggleChecklistCategory('network')" style="cursor:pointer;">
+                    <span style="display:flex;align-items:center;gap:8px;">
+                        <span>🌐</span>
+                        <span style="font-weight:600;">网络安全</span>
+                    </span>
+                    <span style="font-size:12px;color:#fcd34d;">1/2</span>
+                </div>
+                <div id="checklist-network" class="checklist-item-content" style="display:block;">
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">不在公共WiFi进行敏感操作</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" style="width:18px;height:18px;accent-color:#10b981;">
+                        <span>使用VPN加密网络流量</span>
+                    </label>
+                </div>
+                
+                <div class="checklist-item-header" onclick="toggleChecklistCategory('data')" style="cursor:pointer;">
+                    <span style="display:flex;align-items:center;gap:8px;">
+                        <span>📊</span>
+                        <span style="font-weight:600;">数据安全</span>
+                    </span>
+                    <span style="font-size:12px;color:#f87171;">0/2</span>
+                </div>
+                <div id="checklist-data" class="checklist-item-content" style="display:none;">
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" style="width:18px;height:18px;accent-color:#10b981;">
+                        <span>重要数据定期备份</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" style="width:18px;height:18px;accent-color:#10b981;">
+                        <span>敏感数据加密存储</span>
+                    </label>
+                </div>
+                
+                <div class="checklist-item-header" onclick="toggleChecklistCategory('account')" style="cursor:pointer;">
+                    <span style="display:flex;align-items:center;gap:8px;">
+                        <span>🔐</span>
+                        <span style="font-weight:600;">账号安全</span>
+                    </span>
+                    <span style="font-size:12px;color:#34d399;">3/3</span>
+                </div>
+                <div id="checklist-account" class="checklist-item-content" style="display:none;">
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">不同账号使用不同密码</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">开启双重验证</span>
+                    </label>
+                    <label class="checklist-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;cursor:pointer;">
+                        <input type="checkbox" checked style="width:18px;height:18px;accent-color:#10b981;">
+                        <span style="text-decoration:line-through;opacity:0.6;">不随意点击陌生链接</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button class="modal-btn modal-btn-primary" onclick="addCustomTask()" style="width:100%;margin-top:20px;">
+                ➕ 添加自定义安全任务
+            </button>
+        </div>
+    `;
+}
+
+function toggleChecklistCategory(category) {
+    const content = document.getElementById('checklist-' + category);
+    if (content) {
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function addCustomTask() {
+    const taskName = prompt('请输入自定义安全任务名称：');
+    if (taskName && taskName.trim()) {
+        alert('任务「' + taskName + '」添加成功！');
+    }
+}
+
+// ============ 工具实现 - 浏览器安全 ============
+function renderBrowserSafety() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1f2937 0%,#1e3a5f 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                🛡️ 浏览器安全状态面板
+            </h3>
+            
+            <div class="shield-animation" style="text-align:center;margin:20px 0;position:relative;">
+                <div style="font-size:60px;">🛡️</div>
+                <div class="particles" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+                    <div class="particle" style="position:absolute;width:4px;height:4px;background:#60a5fa;border-radius:50%;animation:particleFloat 3s ease-in-out infinite;top:20%;left:30%;"></div>
+                    <div class="particle" style="position:absolute;width:4px;height:4px;background:#3b82f6;border-radius:50%;animation:particleFloat 3s ease-in-out infinite 0.5s;top:40%;left:70%;"></div>
+                    <div class="particle" style="position:absolute;width:4px;height:4px;background:#93c5fd;border-radius:50%;animation:particleFloat 3s ease-in-out infinite 1s;top:60%;left:40%;"></div>
+                    <div class="particle" style="position:absolute;width:4px;height:4px;background:#60a5fa;border-radius:50%;animation:particleFloat 3s ease-in-out infinite 1.5s;top:80%;left:60%;"></div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(59,130,246,0.1);margin-bottom:15px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">🔌 插件安全评分</h4>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;">
+                    <span style="width:10px;height:10px;background:#ef4444;border-radius:50%;"></span>
+                    <span style="color:#fca5a5;">广告拦截器Pro（权限滥用风险）</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;">
+                    <span style="width:10px;height:10px;background:#f59e0b;border-radius:50%;"></span>
+                    <span style="color:#fcd34d;">购物助手（数据跟踪）</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;">
+                    <span style="width:10px;height:10px;background:#10b981;border-radius:50%;"></span>
+                    <span style="color:#6ee7b7;">密码管理器（安全）</span>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(59,130,246,0.1);margin-bottom:15px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">🔒 隐私设置检测</h4>
+                <div style="color:#bfdbfe;font-size:13px;line-height:1.8;">
+                    <div>🍪 Cookie策略：<span style="color:#fcd34d;">仅接受必要Cookie</span></div>
+                    <div>🚫 弹窗拦截：<span style="color:#6ee7b7;">已启用</span></div>
+                    <div>🔑 密码自动填充：<span style="color:#f59e0b;">已启用（建议关闭）</span></div>
+                    <div>🕵️ 追踪保护：<span style="color:#6ee7b7;">严格模式</span></div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(59,130,246,0.1);margin-bottom:15px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">⚠️ 近期威胁记录</h4>
+                <div style="color:#bfdbfe;font-size:13px;line-height:1.6;">
+                    <div style="padding:6px;background:rgba(239,68,68,0.1);border-radius:4px;margin-bottom:4px;">
+                        🚫 2小时前：拦截恶意网站 phishingsite.com
+                    </div>
+                    <div style="padding:6px;background:rgba(245,158,11,0.1);border-radius:4px;">
+                        ⚠️ 昨天：阻止可疑下载 malware.exe
+                    </div>
+                </div>
+            </div>
+            
+            <button class="modal-btn modal-btn-primary" onclick="hardenBrowser()" style="width:100%;">
+                🚀 一键安全加固
+            </button>
+        </div>
+    `;
+}
+
+function hardenBrowser() {
+    alert('正在优化浏览器安全设置...\n\n已完成：\n✓ 禁用风险插件\n✓ 启用严格追踪保护\n✓ 关闭非必要Cookie\n✓ 增强弹窗拦截');
+}
+
+// ============ 工具实现 - 数据保护 ============
+function renderDataProtection() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#a5b4fc;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(129,140,248,0.5);">
+                🔐 数据保护中心
+            </h3>
+            
+            <div style="text-align:center;margin:20px 0;">
+                <div style="font-size:50px;">💾🔒</div>
+                <div style="color:#c7d2fe;font-size:14px;margin-top:10px;">数据流加密中...</div>
+            </div>
+            
+            <div style="display:grid;gap:12px;margin-bottom:20px;">
+                <button class="modal-btn modal-btn-primary" onclick="showEncryptPanel()">
+                    🔐 文件加密
+                </button>
+                <button class="modal-btn modal-btn-secondary" onclick="showBackupPanel()">
+                    💾 数据备份
+                </button>
+                <button class="modal-btn" style="background:#ef4444;color:white;" onclick="showDestroyPanel()">
+                    🗑️ 安全销毁
+                </button>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#c7d2fe;margin-bottom:10px;">📊 数据安全评分</h4>
+                <svg width="100%" height="150" viewBox="0 0 200 150">
+                    <polygon points="100,20 160,60 140,120 60,120 40,60" 
+                             fill="rgba(129,140,248,0.2)" stroke="#818cf8" stroke-width="2"/>
+                    <polygon points="100,40 140,70 120,100 80,100 60,70" 
+                             fill="rgba(16,185,129,0.3)" stroke="#10b981" stroke-width="2"/>
+                    <text x="100" y="25" text-anchor="middle" fill="#a5b4fc" font-size="10">加密</text>
+                    <text x="165" y="65" text-anchor="start" fill="#a5b4fc" font-size="10">备份</text>
+                    <text x="145" y="125" text-anchor="start" fill="#a5b4fc" font-size="10">完整性</text>
+                    <text x="55" y="125" text-anchor="end" fill="#a5b4fc" font-size="10">销毁</text>
+                    <text x="35" y="65" text-anchor="end" fill="#a5b4fc" font-size="10">防护</text>
+                </svg>
+            </div>
+            
+            <div class="timeline" style="margin-top:20px;">
+                <h4 style="color:#c7d2fe;margin-bottom:10px;">⏰ 数据保护历史</h4>
+                <div class="timeline-item" style="position:relative;padding-left:20px;margin-bottom:15px;">
+                    <div style="color:#818cf8;font-size:12px;">2024-01-15 14:30</div>
+                    <div style="color:#e0e7ff;">✓ 完成全盘加密</div>
+                </div>
+                <div class="timeline-item" style="position:relative;padding-left:20px;margin-bottom:15px;">
+                    <div style="color:#818cf8;font-size:12px;">2024-01-14 09:00</div>
+                    <div style="color:#e0e7ff;">✓ 云备份同步完成</div>
+                </div>
+                <div class="timeline-item" style="position:relative;padding-left:20px;">
+                    <div style="color:#818cf8;font-size:12px;">2024-01-12 18:45</div>
+                    <div style="color:#e0e7ff;">✓ 安全销毁旧文件</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function showEncryptPanel() {
+    alert('文件加密功能\n\n支持算法：AES-256\n请选择要加密的文件或文件夹');
+}
+
+function showBackupPanel() {
+    alert('数据备份功能\n\n支持：本地备份 + 云备份\n请设置备份计划');
+}
+
+function showDestroyPanel() {
+    alert('安全销毁功能\n\n警告：此操作不可恢复！\n请确认要销毁的文件');
+}
+
+// ============ 工具实现 - 应急响应 ============
+function renderEmergencyResponse() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#450a0a 0%,#7f1d1d 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#fca5a5;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(239,68,68,0.5);">
+                🚨 应急响应指挥中心
+            </h3>
+            
+            <div style="text-align:center;margin:20px 0;">
+                <div class="pulse-animation" style="font-size:60px;animation:pulse 1s ease-in-out infinite;">🚨</div>
+                <div style="color:#fecaca;font-size:14px;margin-top:10px;">系统进入应急状态</div>
+            </div>
+            
+            <div style="margin-bottom:20px;">
+                <div style="color:#fecaca;font-weight:600;margin-bottom:10px;">📋 应急响应流程</div>
+                
+                <div style="background:rgba(220,38,38,0.2);border:1px solid #ef4444;border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#fca5a5;font-weight:600;margin-bottom:5px;">1️⃣ 威胁识别</div>
+                    <div style="color:#fecaca;font-size:13px;">上传日志/截图，自动分析攻击类型</div>
+                    <button class="modal-btn" style="width:100%;margin-top:8px;background:#dc2626;color:white;" onclick="uploadLog()">
+                        📤 上传分析
+                    </button>
+                </div>
+                
+                <div style="background:rgba(220,38,38,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#fca5a5;font-weight:600;margin-bottom:5px;">2️⃣ 隔离处置</div>
+                    <div style="color:#fecaca;font-size:13px;">一键断网/隔离受感染设备</div>
+                    <button class="modal-btn" style="width:100%;margin-top:8px;background:#b91c1c;color:white;" onclick="isolateDevice()">
+                        ⚡ 立即隔离
+                    </button>
+                </div>
+                
+                <div style="background:rgba(220,38,38,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:12px;margin-bottom:10px;">
+                    <div style="color:#fca5a5;font-weight:600;margin-bottom:5px;">3️⃣ 溯源分析</div>
+                    <div style="color:#fecaca;font-size:13px;">追踪攻击IP、分析攻击路径</div>
+                </div>
+                
+                <div style="background:rgba(220,38,38,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:12px;">
+                    <div style="color:#fca5a5;font-weight:600;margin-bottom:5px;">4️⃣ 恢复重建</div>
+                    <div style="color:#fecaca;font-size:13px;">数据恢复、系统安全加固</div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(220,38,38,0.1);">
+                <h4 style="color:#fca5a5;margin-bottom:10px;">📑 应急模板</h4>
+                <div style="display:grid;gap:8px;">
+                    <button class="modal-btn modal-btn-secondary" style="text-align:left;" onclick="loadTemplate('ransomware')">
+                        🔒 勒索软件响应
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" style="text-align:left;" onclick="loadTemplate('dataleak')">
+                        📊 数据泄露响应
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" style="text-align:left;" onclick="loadTemplate('phishing')">
+                        🎣 钓鱼攻击响应
+                    </button>
+                </div>
+            </div>
+            
+            <button class="modal-btn" style="width:100%;margin-top:20px;background:#dc2626;color:white;" onclick="generateReport()">
+                📄 生成应急报告
+            </button>
+        </div>
+    `;
+}
+
+function uploadLog() {
+    alert('请选择日志文件或截图进行上传分析');
+}
+
+function isolateDevice() {
+    if (confirm('⚠️ 确认要隔离此设备吗？\n\n这将断开网络连接！')) {
+        alert('设备已隔离，请联系安全团队');
+    }
+}
+
+function loadTemplate(type) {
+    const templates = {
+        ransomware: '勒索软件响应模板已加载',
+        dataleak: '数据泄露响应模板已加载',
+        phishing: '钓鱼攻击响应模板已加载'
+    };
+    alert(templates[type] || '模板加载完成');
+}
+
+function generateReport() {
+    alert('应急报告生成中...\n\n报告包含：\n• 攻击详情\n• 处置过程\n• 预防措施\n\n报告已准备好导出');
+}
+
+// ============ 工具实现 - 专业名词 ============
+function renderGlossary() {
+    const glossaryData = [
+        {
+            category: 'Web安全',
+            terms: [
+                { term: 'SQL注入', desc: '通过在输入中插入SQL代码来操纵数据库的攻击', example: 'OR 1=1 --' },
+                { term: 'XSS', desc: '跨站脚本攻击，在网页中注入恶意脚本', example: '<script>alert(1)</script>' },
+                { term: 'CSRF', desc: '跨站请求伪造，利用用户身份执行未授权操作', example: '恶意图片链接' }
+            ]
+        },
+        {
+            category: '系统安全',
+            terms: [
+                { term: 'Shell', desc: '操作系统的命令行界面', example: 'bash、zsh' },
+                { term: 'Root', desc: 'Linux系统的最高权限用户', example: 'sudo su' },
+                { term: '提权', desc: '从普通用户权限提升到管理员权限', example: '内核漏洞利用' }
+            ]
+        },
+        {
+            category: '密码学',
+            terms: [
+                { term: '对称加密', desc: '加密和解密使用相同密钥的加密方式', example: 'AES、DES' },
+                { term: '非对称加密', desc: '使用公钥和私钥配对的加密方式', example: 'RSA、ECC' },
+                { term: '哈希', desc: '将任意长度数据转换为固定长度值的函数', example: 'MD5、SHA256' }
+            ]
+        }
     ];
     
-    let html = '<div style="display:grid;gap:12px;">';
-    items.forEach((item, i) => {
-        html += `<label style="display:flex;align-items:center;gap:12px;background:var(--bg-card);padding:16px;border-radius:10px;border:1px solid var(--border-color);cursor:pointer;">
-            <input type="checkbox" id="check${i}" style="width:20px;height:20px;accent-color:var(--accent-primary);">
-            <span for="check${i}">${item}</span>
-        </label>`;
+    let html = `
+        <div class="tech-card" style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                📚 网安术语词典
+            </h3>
+            
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    `;
+    
+    glossaryData.forEach((cat, idx) => {
+        html += `
+            <button class="modal-btn ${idx === 0 ? 'modal-btn-primary' : 'modal-btn-secondary'}" 
+                    onclick="showGlossaryCategory(${idx})" style="font-size:13px;">
+                ${cat.category}
+            </button>
+        `;
     });
-    html += '</div>';
+    
+    html += `
+            </div>
+            
+            <div id="glossaryContent">
+    `;
+    
+    glossaryData.forEach((cat, catIdx) => {
+        html += `
+            <div class="glossary-category" id="glossaryCat${catIdx}" style="${catIdx !== 0 ? 'display:none;' : ''}">
+                <h4 style="color:#93c5fd;margin-bottom:12px;">📂 ${cat.category}</h4>
+        `;
+        
+        cat.terms.forEach((term, termIdx) => {
+            html += `
+                <div class="tech-card" style="background:rgba(59,130,246,0.1);margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="color:#e0e7ff;font-weight:600;">${term.term}</span>
+                        <button class="modal-btn" style="padding:4px 10px;font-size:12px;background:rgba(16,185,129,0.2);color:#6ee7b7;" onclick="alert('已收藏：${term.term}')">
+                            ⭐ 收藏
+                        </button>
+                    </div>
+                    <div style="color:#94a3b8;font-size:13px;margin-bottom:8px;">${term.desc}</div>
+                    <div style="background:rgba(0,0,0,0.3);padding:8px;border-radius:6px;">
+                        <span style="color:#64748b;font-size:12px;">示例：</span>
+                        <span style="color:#fbbf24;font-size:12px;font-family:'Courier New',monospace;">${term.example}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `</div>`;
+    });
+    
+    html += `
+            </div>
+            
+            <div style="margin-top:16px;text-align:center;">
+                <button class="modal-btn modal-btn-primary" onclick="showDailyTerm()">
+                    🎲 每日一词
+                </button>
+            </div>
+        </div>
+    `;
+    
     return html;
+}
+
+function showGlossaryCategory(idx) {
+    const categories = document.querySelectorAll('.glossary-category');
+    categories.forEach((cat, i) => {
+        cat.style.display = i === idx ? 'block' : 'none';
+    });
+}
+
+function showDailyTerm() {
+    const terms = ['SQL注入', 'XSS', 'CSRF', 'Shell', 'Root', '对称加密', '非对称加密', '哈希', '提权', '漏洞'];
+    const randomTerm = terms[Math.floor(Math.random() * terms.length)];
+    alert('📖 今日学习：' + randomTerm + '\n\n点击查看详细解释！');
+}
+
+// ============ 工具实现 - CTF知识点 ============
+function renderCtfKnowledge() {
+    const categories = [
+        {
+            name: 'Web',
+            icon: '🌐',
+            topics: ['SQL注入', 'XSS', 'CSRF', '文件上传', '反序列化']
+        },
+        {
+            name: 'Crypto',
+            icon: '🔐',
+            topics: ['RSA', 'AES', '哈希', 'Base64', '古典密码']
+        },
+        {
+            name: 'Pwn',
+            icon: '💥',
+            topics: ['栈溢出', '格式化字符串', '堆溢出', 'ROP']
+        },
+        {
+            name: 'Reverse',
+            icon: '🔧',
+            topics: ['IDA Pro', 'GDB', '动态分析', '静态分析']
+        },
+        {
+            name: 'Misc',
+            icon: '🎯',
+            topics: ['隐写术', '二维码', '编码', '取证']
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#a5b4fc;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(129,140,248,0.5);">
+                🏆 CTF知识点库
+            </h3>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;">
+                ${categories.map((cat, idx) => `
+                    <div class="tech-card" style="background:rgba(129,140,248,0.1);text-align:center;cursor:pointer;" onclick="showCtfCategory('${cat.name}')">
+                        <div style="font-size:32px;margin-bottom:8px;">${cat.icon}</div>
+                        <div style="color:#e0e7ff;font-weight:600;">${cat.name}</div>
+                        <div style="color:#64748b;font-size:12px;">${cat.topics.length}个知识点</div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#c7d2fe;margin-bottom:10px;">📊 刷题记录</h4>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center;">
+                    <div style="background:rgba(16,185,129,0.1);padding:12px;border-radius:8px;">
+                        <div style="color:#6ee7b7;font-size:24px;font-weight:bold;">24</div>
+                        <div style="color:#94a3b8;font-size:12px;">已解决</div>
+                    </div>
+                    <div style="background:rgba(245,158,11,0.1);padding:12px;border-radius:8px;">
+                        <div style="color:#fcd34d;font-size:24px;font-weight:bold;">12</div>
+                        <div style="color:#94a3b8;font-size:12px;">进行中</div>
+                    </div>
+                    <div style="background:rgba(239,68,68,0.1);padding:12px;border-radius:8px;">
+                        <div style="color:#fca5a5;font-size:24px;font-weight:bold;">8</div>
+                        <div style="color:#94a3b8;font-size:12px;">未解决</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function showCtfCategory(name) {
+    alert('正在加载 ' + name + ' 方向知识点...');
+}
+
+// ============ 工具实现 - 常见漏洞 ============
+function renderVulnerability() {
+    const vulnerabilities = [
+        {
+            name: 'SQL注入',
+            cve: 'CVE-2021-XXXX',
+            severity: '高危',
+            color: '#ef4444',
+            description: '通过构造恶意SQL语句来操纵数据库',
+            steps: ['找到注入点', '构造Payload', '获取数据', '提权控制']
+        },
+        {
+            name: 'XSS跨站脚本',
+            cve: 'CVE-2020-XXXX',
+            severity: '中危',
+            color: '#f59e0b',
+            description: '在网页中注入恶意JavaScript代码',
+            steps: ['寻找输入点', '测试过滤', '构造Payload', '获取Cookie']
+        },
+        {
+            name: '文件上传漏洞',
+            cve: 'CVE-2022-XXXX',
+            severity: '高危',
+            color: '#ef4444',
+            description: '绕过过滤上传恶意文件获取Shell',
+            steps: ['测试上传', '绕过检测', '上传Webshell', '获取权限']
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#450a0a 0%,#7f1d1d 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#fca5a5;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(239,68,68,0.5);">
+                🐛 常见漏洞库
+            </h3>
+            
+            <div style="margin-bottom:16px;">
+                <h4 style="color:#fecaca;margin-bottom:10px;">🔥 漏洞热度榜</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${['SQL注入', 'XSS', '文件上传', '反序列化', 'SSRF'].map((v, i) => `
+                        <span style="background:rgba(239,68,68,0.2);padding:6px 12px;border-radius:20px;color:#fca5a5;font-size:13px;">
+                            ${i + 1}. ${v}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            ${vulnerabilities.map(vuln => `
+                <div class="tech-card" style="background:rgba(0,0,0,0.3);margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="color:#e0e7ff;font-weight:600;">${vuln.name}</span>
+                            <span style="background:${vuln.color};padding:2px 8px;border-radius:4px;color:white;font-size:11px;">${vuln.severity}</span>
+                        </div>
+                        <span style="color:#64748b;font-size:12px;font-family:'Courier New',monospace;">${vuln.cve}</span>
+                    </div>
+                    <p style="color:#94a3b8;font-size:13px;margin-bottom:10px;">${vuln.description}</p>
+                    <div style="background:rgba(0,0,0,0.3);padding:10px;border-radius:6px;">
+                        <div style="color:#64748b;font-size:12px;margin-bottom:6px;">利用流程：</div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            ${vuln.steps.map((step, i) => `
+                                <span style="background:rgba(239,68,68,0.2);padding:4px 10px;border-radius:4px;color:#fca5a5;font-size:12px;">
+                                    ${i + 1}. ${step}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+            
+            <button class="modal-btn" style="width:100%;background:#dc2626;color:white;margin-top:12px;" onclick="alert('漏洞报告模板生成中...')">
+                📄 生成漏洞报告
+            </button>
+        </div>
+    `;
+}
+
+// ============ 工具实现 - Linux基础 ============
+function renderLinuxBasic() {
+    const modules = [
+        {
+            name: '基础命令',
+            icon: '📝',
+            commands: ['ls', 'cd', 'pwd', 'cat', 'grep', 'find']
+        },
+        {
+            name: '权限管理',
+            icon: '🔐',
+            commands: ['chmod', 'chown', 'su', 'sudo']
+        },
+        {
+            name: '日志分析',
+            icon: '📊',
+            commands: ['tail', 'less', 'journalctl']
+        },
+        {
+            name: '服务安全',
+            icon: '🛡️',
+            commands: ['systemctl', 'iptables', 'ufw']
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#064e3b 0%,#065f46 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#6ee7b7;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(16,185,129,0.5);">
+                🐧 Linux安全实训
+            </h3>
+            
+            <div style="margin-bottom:16px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">🖥️ 在线终端模拟器</h4>
+                <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:'Courier New',monospace;">
+                    <div style="color:#6ee7b7;margin-bottom:8px;">user@ctf-box:~$ <span style="color:#e0e7ff;">ls -la</span></div>
+                    <div style="color:#94a3b8;">drwxr-xr-x  5 user user 4096 Jan 15 10:00 .</div>
+                    <div style="color:#94a3b8;">drwxr-xr-x 10 root root 4096 Jan 10 09:00 ..</div>
+                    <div style="color:#60a5fa;">-rwxr-xr-x  1 user user  256 Jan 15 10:00 exploit.py</div>
+                    <div style="color:#6ee7b7;margin-top:8px;">user@ctf-box:~$ <span style="color:#e0e7ff;animation:blink 1s infinite;">_</span></div>
+                </div>
+            </div>
+            
+            <div style="display:grid;gap:12px;">
+                ${modules.map(mod => `
+                    <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <span style="font-size:24px;">${mod.icon}</span>
+                            <span style="color:#e0e7ff;font-weight:600;">${mod.name}</span>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            ${mod.commands.map(cmd => `
+                                <button class="modal-btn" style="padding:6px 12px;font-size:12px;background:rgba(0,0,0,0.3);color:#6ee7b7;" onclick="alert('${cmd} 命令：${getCmdDesc(cmd)}')">
+                                    ${cmd}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <button class="modal-btn modal-btn-primary" style="width:100%;margin-top:16px;" onclick="alert('正在执行安全加固脚本...')">
+                🔒 一键安全加固
+            </button>
+        </div>
+    `;
+}
+
+function getCmdDesc(cmd) {
+    const descs = {
+        'ls': '列出目录内容',
+        'cd': '切换目录',
+        'pwd': '显示当前路径',
+        'cat': '查看文件内容',
+        'grep': '文本搜索',
+        'find': '文件查找',
+        'chmod': '修改文件权限',
+        'chown': '修改文件所有者',
+        'su': '切换用户',
+        'sudo': '以管理员权限执行'
+    };
+    return descs[cmd] || 'Linux基础命令';
+}
+
+// ============ 工具实现 - Python速查 ============
+function renderPythonCheat() {
+    const snippets = [
+        {
+            category: '端口扫描',
+            code: `import socket
+
+def scan_port(host, port):
+    sock = socket.socket()
+    sock.settimeout(1)
+    try:
+        sock.connect((host, port))
+        return True
+    except:
+        return False
+    finally:
+        sock.close()
+
+for port in range(1, 1025):
+    if scan_port('127.0.0.1', port):
+        print(f'[+] Port {port} open')`,
+            desc: '基础端口扫描器'
+        },
+        {
+            category: '爬虫',
+            code: `import requests
+
+url = 'https://example.com'
+headers = {'User-Agent': 'Mozilla/5.0'}
+
+response = requests.get(url, headers=headers)
+print(response.status_code)
+print(response.text[:500])`,
+            desc: 'HTTP请求与爬虫'
+        },
+        {
+            category: '密码破解',
+            code: `import hashlib
+
+def crack_hash(target_hash, wordlist):
+    for word in wordlist:
+        word_hash = hashlib.md5(word.encode()).hexdigest()
+        if word_hash == target_hash:
+            return word
+    return None
+
+wordlist = ['123456', 'password', 'admin']
+print(crack_hash('e10adc3949ba59abbe56e057f20f883e', wordlist))`,
+            desc: 'MD5哈希爆破'
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#fcd34d;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(252,211,77,0.5);">
+                🐍 Python网安速查
+            </h3>
+            
+            <div style="margin-bottom:16px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">📚 常用库速查</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${['requests', 'scapy', 'pwntools', 'hashlib', 'socket', 're'].map(lib => `
+                        <span style="background:rgba(252,211,77,0.2);padding:6px 12px;border-radius:20px;color:#fcd34d;font-size:13px;font-family:'Courier New',monospace;">
+                            ${lib}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            ${snippets.map((snippet, idx) => `
+                <div class="tech-card" style="background:rgba(0,0,0,0.3);margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="color:#e0e7ff;font-weight:600;">${snippet.category}</span>
+                        <button class="modal-btn" style="padding:4px 10px;font-size:12px;background:rgba(16,185,129,0.2);color:#6ee7b7;" onclick="copyCode(${idx})">
+                            📋 复制
+                        </button>
+                    </div>
+                    <div style="color:#94a3b8;font-size:12px;margin-bottom:8px;">${snippet.desc}</div>
+                    <pre style="background:#0f172a;padding:12px;border-radius:6px;overflow-x:auto;margin:0;">
+<code style="color:#6ee7b7;font-family:'Courier New',monospace;font-size:12px;">${snippet.code}</code>
+                    </pre>
+                </div>
+            `).join('')}
+            
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;">
+                <button class="modal-btn modal-btn-primary" onclick="alert('端口扫描器模板已生成')">
+                    🎯 端口扫描器
+                </button>
+                <button class="modal-btn modal-btn-secondary" onclick="alert('暴力破解器模板已生成')">
+                    🔓 暴力破解器
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function copyCode(idx) {
+    alert('代码已复制到剪贴板！');
+}
+
+// ============ 工具实现 - 文件上传 ============
+function renderFileUpload() {
+    const stages = [
+        {
+            name: '基础上传',
+            desc: '测试普通文件上传功能',
+            color: '#3b82f6'
+        },
+        {
+            name: '绕过技巧',
+            desc: '后缀名、类型检测绕过',
+            color: '#f59e0b'
+        },
+        {
+            name: '防御绕过',
+            desc: '内容检测、WAF绕过',
+            color: '#ef4444'
+        },
+        {
+            name: '漏洞利用',
+            desc: 'GetShell、权限提升',
+            color: '#dc2626'
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                📁 文件上传漏洞实训
+            </h3>
+            
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
+                ${stages.map(stage => `
+                    <div class="tech-card" style="background:rgba(59,130,246,0.1);text-align:center;cursor:pointer;" onclick="showUploadStage('${stage.name}')">
+                        <div style="color:${stage.color};font-size:24px;margin-bottom:8px;">📤</div>
+                        <div style="color:#e0e7ff;font-weight:600;">${stage.name}</div>
+                        <div style="color:#64748b;font-size:12px;">${stage.desc}</div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">🛡️ 绕过技巧</h4>
+                <div style="display:grid;gap:8px;">
+                    ${[
+                        '后缀名绕过: shell.php.jpg',
+                        '大小写绕过: Shell.PHP',
+                        '双写绕过: shell.pphphp',
+                        '00截断: shell.php\\x00.jpg',
+                        'MIME类型绕过: image/jpeg'
+                    ].map(tip => `
+                        <div style="background:rgba(59,130,246,0.1);padding:8px;border-radius:6px;">
+                            <span style="color:#fbbf24;font-family:'Courier New',monospace;font-size:12px;">${tip}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);margin-top:12px;">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">✅ 安全上传实现</h4>
+                <pre style="background:#0f172a;padding:10px;border-radius:6px;margin:0;overflow-x:auto;">
+<code style="color:#6ee7b7;font-family:'Courier New',monospace;font-size:11px;">// 白名单校验+重命名+内容检测
+$allowed = ['jpg', 'png', 'gif'];
+$ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+if (!in_array($ext, $allowed)) die();
+$newname = uniqid() . '.' . $ext;</code>
+                </pre>
+            </div>
+        </div>
+    `;
+}
+
+function showUploadStage(name) {
+    alert('进入 ' + name + ' 阶段...');
+}
+
+// ============ 工具实现 - 隐写术 ============
+function renderSteganography() {
+    const modules = [
+        {
+            name: 'LSB隐写',
+            icon: '🖼️',
+            desc: '最低有效位隐写'
+        },
+        {
+            name: 'EXIF隐写',
+            icon: '📷',
+            desc: '图片元数据隐写'
+        },
+        {
+            name: '音频隐写',
+            icon: '🎵',
+            desc: '音频文件隐写'
+        },
+        {
+            name: '文档隐写',
+            icon: '📄',
+            desc: '文档隐写术'
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#a78bfa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(167,139,250,0.5);">
+                🔍 隐写术实训
+            </h3>
+            
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
+                ${modules.map(mod => `
+                    <div class="tech-card" style="background:rgba(167,139,250,0.1);text-align:center;cursor:pointer;" onclick="showStegModule('${mod.name}')">
+                        <div style="font-size:32px;margin-bottom:8px;">${mod.icon}</div>
+                        <div style="color:#e0e7ff;font-weight:600;">${mod.name}</div>
+                        <div style="color:#64748b;font-size:12px;">${mod.desc}</div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#c7d2fe;margin-bottom:10px;">🛠️ 常用工具</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${['steghide', 'strings', 'binwalk', 'zsteg', 'exiftool', 'foremost'].map(tool => `
+                        <span style="background:rgba(167,139,250,0.2);padding:6px 12px;border-radius:20px;color:#c4b5fd;font-size:13px;font-family:'Courier New',monospace;">
+                            ${tool}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);margin-top:12px;">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">🎯 隐写挑战</h4>
+                <div style="display:grid;gap:8px;">
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('挑战1：找出图片中隐藏的Flag')">
+                        挑战1：图片LSB隐写
+                    </button>
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('挑战2：分析音频文件')">
+                        挑战2：音频隐写
+                    </button>
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('挑战3：检查文档元数据')">
+                        挑战3：文档隐写
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function showStegModule(name) {
+    alert('加载 ' + name + ' 模块...');
+}
+
+// ============ 工具实现 - 社会工程 ============
+function renderSocialEngineering() {
+    const attackTypes = [
+        {
+            name: '钓鱼攻击',
+            icon: '🎣',
+            desc: '伪装成可信实体窃取信息',
+            color: '#ef4444'
+        },
+        {
+            name: 'Pretexting',
+            icon: '🎭',
+            desc: '编造场景获取信任',
+            color: '#f59e0b'
+        },
+        {
+            name: 'Baiting',
+            icon: '🪤',
+            desc: '用诱饵诱导受害者',
+            color: '#f59e0b'
+        },
+        {
+            name: 'Tailgating',
+            icon: '🚪',
+            desc: '尾随进入受限区域',
+            color: '#3b82f6'
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#451a03 0%,#78350f 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#fcd34d;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(252,211,77,0.5);">
+                🎭 社会工程学
+            </h3>
+            
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
+                ${attackTypes.map(type => `
+                    <div class="tech-card" style="background:rgba(252,211,77,0.1);" onclick="showAttackType('${type.name}')">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <span style="font-size:28px;">${type.icon}</span>
+                            <span style="color:#e0e7ff;font-weight:600;">${type.name}</span>
+                        </div>
+                        <p style="color:#94a3b8;font-size:12px;margin:0;">${type.desc}</p>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#fcd34d;margin-bottom:10px;">📧 钓鱼邮件生成器</h4>
+                <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;margin-bottom:12px;">
+                    <div style="color:#ef4444;font-weight:600;margin-bottom:8px;">⚠️ 示例钓鱼邮件</div>
+                    <div style="color:#94a3b8;font-size:12px;line-height:1.6;">
+                        <div style="margin-bottom:4px;"><strong>发件人：</strong>银行安全中心 &lt;security@bank.com-fake.com&gt;</div>
+                        <div style="margin-bottom:4px;"><strong>主题：</strong>您的账户需要验证</div>
+                        <div style="margin-top:8px;background:rgba(0,0,0,0.3);padding:8px;border-radius:4px;">
+                            尊敬的用户，您的账户存在异常登录，请立即点击以下链接验证：<br>
+                            <span style="color:#ef4444;">https://bank.com-verify.fake.com/login</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-btn" style="width:100%;background:#dc2626;color:white;" onclick="alert('钓鱼邮件模板已生成，仅用于学习防御！')">
+                    📝 生成钓鱼模板（学习用）
+                </button>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);margin-top:12px;">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">🛡️ 防御指南</h4>
+                <ul style="list-style:none;padding:0;color:#94a3b8;font-size:13px;line-height:1.8;">
+                    <li>✅ 仔细检查发件人邮箱地址</li>
+                    <li>✅ 不要点击可疑链接</li>
+                    <li>✅ 核实信息直接联系官方</li>
+                    <li>✅ 不透露敏感信息</li>
+                    <li>✅ 保持警惕，不贪小便宜</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function showAttackType(name) {
+    alert('学习 ' + name + ' 攻击类型与防御方法');
+}
+
+// ============ 工具实现 - 逆向工程 ============
+function renderReverseEng() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1f2937 0%,#0f172a 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#a78bfa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(167,139,250,0.5);">
+                🔧 逆向工程入门
+            </h3>
+            
+            <div style="display:grid;gap:12px;margin-bottom:16px;">
+                <div class="tech-card" style="background:rgba(167,139,250,0.1);">
+                    <h4 style="color:#c4b5fd;margin-bottom:10px;">📋 分析方法</h4>
+                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+                        <div style="background:rgba(0,0,0,0.3);padding:10px;border-radius:6px;text-align:center;">
+                            <div style="color:#a78bfa;font-weight:600;">静态分析</div>
+                            <div style="color:#94a3b8;font-size:12px;">不运行程序分析</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.3);padding:10px;border-radius:6px;text-align:center;">
+                            <div style="color:#a78bfa;font-weight:600;">动态分析</div>
+                            <div style="color:#94a3b8;font-size:12px;">运行时调试分析</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card" style="background:rgba(167,139,250,0.1);">
+                    <h4 style="color:#c4b5fd;margin-bottom:10px;">🛠️ 常用工具</h4>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        ${['IDA Pro', 'Ghidra', 'x64dbg', 'OllyDbg', 'GDB', 'radare2'].map(tool => `
+                            <span style="background:rgba(167,139,250,0.2);padding:6px 12px;border-radius:20px;color:#c4b5fd;font-size:13px;font-family:'Courier New',monospace;">
+                                ${tool}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="tech-card" style="background:rgba(167,139,250,0.1);">
+                    <h4 style="color:#c4b5fd;margin-bottom:10px;">📚 学习路径</h4>
+                    <div style="display:grid;gap:8px;">
+                        <div style="background:rgba(0,0,0,0.3);padding:8px;border-radius:6px;">
+                            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px;">1. 汇编语言基础</div>
+                            <div style="color:#94a3b8;font-size:12px;">x86/x64汇编指令</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.3);padding:8px;border-radius:6px;">
+                            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px;">2. PE/ELF文件格式</div>
+                            <div style="color:#94a3b8;font-size:12px;">可执行文件结构</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.3);padding:8px;border-radius:6px;">
+                            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px;">3. 调试技巧</div>
+                            <div style="color:#94a3b8;font-size:12px;">断点、单步、内存查看</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">💡 入门提示</h4>
+                <ul style="list-style:none;padding:0;color:#94a3b8;font-size:13px;line-height:1.8;">
+                    <li>✅ 先学习汇编语言基础</li>
+                    <li>✅ 从简单的CrackMe开始练习</li>
+                    <li>✅ 熟悉常用逆向工具的使用</li>
+                    <li>✅ 多做CTF.Reverse题目</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+// ============ 工具实现 - PWN入门 ============
+function renderPwning() {
+    const topics = [
+        {
+            name: '栈溢出基础',
+            icon: '📚',
+            desc: '缓冲区溢出原理'
+        },
+        {
+            name: '格式化字符串',
+            icon: '🔤',
+            desc: '格式化字符串漏洞'
+        },
+        {
+            name: '堆溢出入门',
+            icon: '📊',
+            desc: '堆利用基础'
+        }
+    ];
+    
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1f2937 0%,#111827 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#f87171;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(248,113,113,0.5);">
+                💥 PWN入门
+            </h3>
+            
+            <div style="margin-bottom:16px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">📈 栈溢出可视化</h4>
+                <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-family:'Courier New',monospace;">
+                    <div style="color:#94a3b8;text-align:center;margin-bottom:8px;">高地址 → 低地址</div>
+                    <div style="display:grid;gap:4px;">
+                        <div style="background:#ef4444;padding:8px;border-radius:4px;text-align:center;color:white;">Return Address (被覆盖)</div>
+                        <div style="background:#f59e0b;padding:8px;border-radius:4px;text-align:center;color:white;">Saved EBP</div>
+                        <div style="background:#3b82f6;padding:8px;border-radius:4px;text-align:center;color:white;">Buffer (AAAAA...)</div>
+                        <div style="background:#10b981;padding:8px;border-radius:4px;text-align:center;color:white;">局部变量</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display:grid;gap:12px;margin-bottom:16px;">
+                ${topics.map(topic => `
+                    <div class="tech-card" style="background:rgba(248,113,113,0.1);">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <span style="font-size:24px;">${topic.icon}</span>
+                            <span style="color:#e0e7ff;font-weight:600;">${topic.name}</span>
+                        </div>
+                        <p style="color:#94a3b8;font-size:12px;margin:0;">${topic.desc}</p>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="tech-card" style="background:rgba(0,0,0,0.3);">
+                <h4 style="color:#c7d2fe;margin-bottom:10px;">🛠️ 常用工具</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${['pwntools', 'gdb-peda', 'one_gadget', 'ROPgadget', 'checksec'].map(tool => `
+                        <span style="background:rgba(167,139,250,0.2);padding:6px 12px;border-radius:20px;color:#c4b5fd;font-size:13px;font-family:'Courier New',monospace;">
+                            ${tool}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);margin-top:12px;">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">📝 入门题集</h4>
+                <div style="display:grid;gap:8px;">
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('ret2text - 简单栈溢出')">
+                        Level 1: ret2text
+                    </button>
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('ret2shellcode - Shellcode执行')">
+                        Level 2: ret2shellcode
+                    </button>
+                    <button class="modal-btn" style="background:rgba(16,185,129,0.2);color:#6ee7b7;text-align:left;" onclick="alert('ret2libc - 库函数调用')">
+                        Level 3: ret2libc
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ============ 工具实现 - SQL注入学习 ============
+function renderSqlInjection() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                🗄️ SQL注入学习
+            </h3>
+            
+            <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:16px;">
+                <div class="tech-card" style="background:rgba(59,130,246,0.1);">
+                    <h4 style="color:#93c5fd;margin-bottom:10px;">🎯 漏洞原理</h4>
+                    <div style="background:#0f172a;padding:12px;border-radius:8px;font-family:'Courier New',monospace;">
+                        <div style="color:#94a3b8;margin-bottom:8px;">// 不安全代码</div>
+                        <div style="color:#fca5a5;">\$sql = "SELECT * FROM users WHERE id = '\$_GET[id]'";</div>
+                        <div style="color:#64748b;margin-top:12px;margin-bottom:8px;">// Payload: 1' OR '1'='1</div>
+                        <div style="color:#6ee7b7;">\$sql = "SELECT * FROM users WHERE id = '1' OR '1'='1'";</div>
+                    </div>
+                </div>
+                
+                <div class="tech-card" style="background:rgba(59,130,246,0.1);">
+                    <h4 style="color:#93c5fd;margin-bottom:10px;">💻 交互式靶场</h4>
+                    <input type="text" class="modal-input" id="sqlInput" placeholder="输入用户ID: 1" style="margin-bottom:10px;">
+                    <div class="modal-btn-group">
+                        <button class="modal-btn modal-btn-primary" onclick="testSqlInjection()">测试注入</button>
+                    </div>
+                    <div id="sqlResult" class="modal-result" style="margin-top:12px;"></div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">🛡️ 防御代码</h4>
+                <pre style="background:#0f172a;padding:12px;border-radius:8px;margin:0;overflow-x:auto;">
+<code style="color:#6ee7b7;font-family:'Courier New',monospace;font-size:12px;">// 使用预处理语句
+\$stmt = \$pdo->prepare("SELECT * FROM users WHERE id = ?");
+\$stmt->execute([\$_GET['id']]);
+\$result = \$stmt->fetch();</code>
+                </pre>
+            </div>
+        </div>
+    `;
+}
+
+function testSqlInjection() {
+    const input = document.getElementById('sqlInput')?.value || '';
+    const result = document.getElementById('sqlResult');
+    if (!result) return;
+    
+    if (input.includes("'") || input.includes('"') || input.toLowerCase().includes('or')) {
+        result.innerHTML = '<span style="color:#ef4444;">⚠️ SQL注入检测成功！<br>查询返回了所有数据！</span>';
+    } else if (input) {
+        result.innerHTML = '<span style="color:#6ee7b7;">✅ 查询成功：用户 ' + input + '</span>';
+    } else {
+        result.innerHTML = '<span style="color:#94a3b8;">请输入测试数据</span>';
+    }
+}
+
+// ============ 工具实现 - XSS学习 ============
+function renderXssLearn() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                🌐 XSS跨站脚本学习
+            </h3>
+            
+            <div style="display:grid;gap:12px;margin-bottom:16px;">
+                <div class="tech-card" style="background:rgba(59,130,246,0.1);">
+                    <h4 style="color:#93c5fd;margin-bottom:10px;">📝 XSS类型</h4>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                        <div style="background:rgba(239,68,68,0.2);padding:10px;border-radius:8px;text-align:center;">
+                            <div style="color:#fca5a5;font-weight:600;">Stored</div>
+                            <div style="color:#94a3b8;font-size:11px;">存储型</div>
+                        </div>
+                        <div style="background:rgba(245,158,11,0.2);padding:10px;border-radius:8px;text-align:center;">
+                            <div style="color:#fcd34d;font-weight:600;">Reflected</div>
+                            <div style="color:#94a3b8;font-size:11px;">反射型</div>
+                        </div>
+                        <div style="background:rgba(59,130,246,0.2);padding:10px;border-radius:8px;text-align:center;">
+                            <div style="color:#93c5fd;font-weight:600;">DOM</div>
+                            <div style="color:#94a3b8;font-size:11px;">DOM型</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tech-card" style="background:rgba(59,130,246,0.1);">
+                    <h4 style="color:#93c5fd;margin-bottom:10px;">💻 测试靶场</h4>
+                    <input type="text" class="modal-input" id="xssInput" placeholder="输入评论: &lt;script&gt;alert(1)&lt;/script&gt;" style="margin-bottom:10px;">
+                    <div class="modal-btn-group">
+                        <button class="modal-btn modal-btn-primary" onclick="testXss()">提交评论</button>
+                    </div>
+                    <div id="xssOutput" class="tech-card" style="background:rgba(0,0,0,0.3);margin-top:12px;min-height:40px;padding:10px;"></div>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">🛡️ 防御措施</h4>
+                <ul style="list-style:none;padding:0;color:#94a3b8;font-size:13px;line-height:1.8;">
+                    <li>✅ 对用户输入进行HTML实体编码</li>
+                    <li>✅ 使用Content Security Policy (CSP)</li>
+                    <li>✅ 设置HttpOnly cookie标志</li>
+                    <li>✅ 对输出进行严格过滤</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function testXss() {
+    const input = document.getElementById('xssInput')?.value || '';
+    const output = document.getElementById('xssOutput');
+    if (!output) return;
+    
+    if (input.includes('<script>') || input.includes('javascript:')) {
+        output.innerHTML = '<span style="color:#ef4444;">⚠️ XSS攻击成功！<br>（演示用，实际已过滤）</span>';
+    } else {
+        output.innerHTML = '<span style="color:#6ee7b7;">评论：' + (input || '（空）') + '</span>';
+    }
+}
+
+// ============ 工具实现 - CSRF学习 ============
+function renderCsrfLearn() {
+    return `
+        <div class="tech-card" style="background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);">
+            <h3 style="font-family:'Courier New',monospace;color:#60a5fa;font-size:20px;margin-bottom:16px;text-shadow:0 0 10px rgba(59,130,246,0.5);">
+                🎭 CSRF跨站请求学习
+            </h3>
+            
+            <div class="tech-card" style="background:rgba(59,130,246,0.1);margin-bottom:16px;">
+                <h4 style="color:#93c5fd;margin-bottom:10px;">📖 攻击原理</h4>
+                <div style="color:#94a3b8;font-size:13px;line-height:1.8;">
+                    <p>CSRF（跨站请求伪造）利用用户已登录的身份，在用户不知情的情况下执行未授权操作。</p>
+                    <div style="background:#0f172a;padding:10px;border-radius:6px;margin-top:10px;font-family:'Courier New',monospace;">
+                        <div style="color:#fca5a5;">// 恶意网站上的图片</div>
+                        <div style="color:#fbbf24;">&lt;img src="https://bank.com/transfer?to=hacker&amount=10000"&gt;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;">
+                <div class="tech-card" style="background:rgba(239,68,68,0.1);">
+                    <div style="color:#fca5a5;font-weight:600;margin-bottom:8px;">❌ 不安全代码</div>
+                    <pre style="background:#0f172a;padding:8px;border-radius:4px;margin:0;overflow-x:auto;">
+<code style="color:#fca5a5;font-family:'Courier New',monospace;font-size:11px;">// 没有CSRF Token
+if (isset($_POST['transfer'])) {
+    transferMoney($_POST['to'], $_POST['amount']);
+}</code>
+                    </pre>
+                </div>
+                <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                    <div style="color:#6ee7b7;font-weight:600;margin-bottom:8px;">✅ 安全代码</div>
+                    <pre style="background:#0f172a;padding:8px;border-radius:4px;margin:0;overflow-x:auto;">
+<code style="color:#6ee7b7;font-family:'Courier New',monospace;font-size:11px;">// 验证CSRF Token
+if ($_POST['token'] === $_SESSION['token']) {
+    transferMoney($_POST['to'], $_POST['amount']);
+}</code>
+                    </pre>
+                </div>
+            </div>
+            
+            <div class="tech-card" style="background:rgba(16,185,129,0.1);">
+                <h4 style="color:#6ee7b7;margin-bottom:10px;">🛡️ 防御方法</h4>
+                <ul style="list-style:none;padding:0;color:#94a3b8;font-size:13px;line-height:1.8;">
+                    <li>✅ 使用CSRF Token验证</li>
+                    <li>✅ 验证Referer头</li>
+                    <li>✅ 使用SameSite Cookie属性</li>
+                    <li>✅ 关键操作要求二次确认</li>
+                </ul>
+            </div>
+        </div>
+    `;
 }
 
 // ============ 工具实现 - 哈希碰撞 ============

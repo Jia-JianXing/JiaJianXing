@@ -1356,6 +1356,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFavorites();
     initTrainingRecords();
     initAiAssistant();
+    initAiChat();
     renderTools();
     initServiceWorker();
     updateTrainingCount();
@@ -1572,11 +1573,12 @@ function initNavigation() {
         item.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
             if (category === 'ai') {
-                openAiModal();
+                openAiChat();
             } else {
                 currentCategory = category;
                 updateActiveCategory();
                 renderTools();
+                closeAiChat();
             }
         });
     });
@@ -3875,6 +3877,190 @@ function escapeHtml(text) {
 // ============ AI助手弹窗功能 ============
 let aiMessages = [];
 let isAiLoading = false;
+
+// ============ 嵌入内容区的AI聊天窗口功能 ============
+let aiChatMessages = [];
+let isAiChatLoading = false;
+
+function openAiChat() {
+    const aiChatContainer = document.getElementById('aiChatContainer');
+    const toolsGrid = document.getElementById('toolsGrid');
+    const contentHeader = document.getElementById('contentHeader');
+    
+    if (aiChatContainer && toolsGrid && contentHeader) {
+        toolsGrid.style.display = 'none';
+        contentHeader.style.display = 'none';
+        aiChatContainer.style.display = 'flex';
+        
+        const aiChatInput = document.getElementById('aiChatInput');
+        if (aiChatInput) {
+            aiChatInput.focus();
+        }
+    }
+}
+
+function closeAiChat() {
+    const aiChatContainer = document.getElementById('aiChatContainer');
+    const toolsGrid = document.getElementById('toolsGrid');
+    const contentHeader = document.getElementById('contentHeader');
+    
+    if (aiChatContainer && toolsGrid && contentHeader) {
+        aiChatContainer.style.display = 'none';
+        toolsGrid.style.display = 'grid';
+        contentHeader.style.display = 'flex';
+    }
+}
+
+function sendAiChatMessage() {
+    const aiChatInput = document.getElementById('aiChatInput');
+    const aiChatSendBtn = document.getElementById('aiChatSendBtn');
+    
+    if (!aiChatInput || !aiChatSendBtn) return;
+    
+    const message = aiChatInput.value.trim();
+    if (!message || isAiChatLoading) return;
+
+    aiChatMessages.push({
+        role: 'user',
+        content: message
+    });
+
+    aiChatInput.value = '';
+    aiChatInput.style.height = 'auto';
+    renderAiChatMessages();
+    callDoubaoAiChat(message);
+}
+
+function renderAiChatMessages() {
+    const aiChatMessagesContainer = document.getElementById('aiChatMessages');
+    if (!aiChatMessagesContainer) return;
+
+    if (aiChatMessages.length === 0) {
+        aiChatMessagesContainer.innerHTML = `
+            <div class="ai-chat-welcome">
+                <div class="ai-chat-welcome-text">有什么我能帮你的吗？</div>
+            </div>
+        `;
+    } else {
+        let html = '';
+        aiChatMessages.forEach(msg => {
+            html += `
+                <div class="ai-chat-message ${msg.role}">
+                    <div class="ai-chat-message-avatar">${msg.role === 'ai' ? '🤖' : '👤'}</div>
+                    <div class="ai-chat-message-content">${escapeHtml(msg.content)}</div>
+                </div>
+            `;
+        });
+        aiChatMessagesContainer.innerHTML = html;
+        aiChatMessagesContainer.scrollTop = aiChatMessagesContainer.scrollHeight;
+    }
+}
+
+async function callDoubaoAiChat(userMessage) {
+    isAiChatLoading = true;
+    const aiChatSendBtn = document.getElementById('aiChatSendBtn');
+    if (aiChatSendBtn) {
+        aiChatSendBtn.disabled = true;
+    }
+
+    const apiKey = '243a0c2f-69a0-433b-badd-0f8279a852f2';
+    const apiUrl = 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
+    const model = 'doubao-seed-2-0-mini-260215';
+
+    const messagesForApi = aiChatMessages.map(msg => ({
+        role: msg.role === 'ai' ? 'assistant' : msg.role,
+        content: msg.content
+    }));
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: model,
+                messages: messagesForApi,
+                stream: false
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('API请求失败');
+        }
+
+        const data = await response.json();
+        const aiResponse = data.choices[0].message.content;
+
+        aiChatMessages.push({
+            role: 'ai',
+            content: aiResponse
+        });
+
+        renderAiChatMessages();
+    } catch (error) {
+        aiChatMessages.push({
+            role: 'ai',
+            content: '抱歉，我现在无法回答，请稍后再试。'
+        });
+        renderAiChatMessages();
+    } finally {
+        isAiChatLoading = false;
+        if (aiChatSendBtn) {
+            aiChatSendBtn.disabled = false;
+        }
+    }
+}
+
+function initAiChat() {
+    const aiChatCloseBtn = document.getElementById('aiChatCloseBtn');
+    const aiChatSendBtn = document.getElementById('aiChatSendBtn');
+    const aiChatInput = document.getElementById('aiChatInput');
+    const aiChatQuickBtns = document.querySelectorAll('.ai-chat-quick-btn');
+
+    if (aiChatCloseBtn) {
+        aiChatCloseBtn.addEventListener('click', function() {
+            currentCategory = 'password';
+            updateActiveCategory();
+            renderTools();
+            closeAiChat();
+        });
+    }
+
+    if (aiChatSendBtn) {
+        aiChatSendBtn.addEventListener('click', sendAiChatMessage);
+    }
+
+    if (aiChatInput) {
+        aiChatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendAiChatMessage();
+            }
+        });
+
+        aiChatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    }
+
+    if (aiChatQuickBtns) {
+        aiChatQuickBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const prompt = this.getAttribute('data-prompt');
+                const aiChatInput = document.getElementById('aiChatInput');
+                if (aiChatInput) {
+                    aiChatInput.value = prompt;
+                    aiChatInput.focus();
+                    aiChatInput.style.height = 'auto';
+                    aiChatInput.style.height = Math.min(aiChatInput.scrollHeight, 120) + 'px';
+                }
+            });
+        });
+    }
+}
 
 function initAiAssistant() {
     const aiOverlay = document.getElementById('aiOverlay');

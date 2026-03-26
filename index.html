@@ -96,12 +96,46 @@
 
             <!-- 主内容区 -->
             <main class="content-area">
-                <div class="content-header">
+                <div class="content-header" id="contentHeader">
                     <h2 class="content-title" id="contentTitle">AI助手</h2>
                     <span class="tool-count" id="toolCount">0 个工具</span>
                 </div>
                 
                 <div class="tools-grid" id="toolsGrid">
+                </div>
+                
+                <!-- AI聊天窗口 -->
+                <div class="ai-chat-container" id="aiChatContainer" style="display: none;">
+                    <div class="ai-chat-header">
+                        <div class="ai-chat-header-left">
+                            <div class="ai-chat-title">新对话</div>
+                            <div class="ai-chat-subtitle">内容由豆包AI生成</div>
+                        </div>
+                        <div class="ai-chat-header-right">
+                            <button class="ai-chat-close-btn" id="aiChatCloseBtn" title="关闭">✕</button>
+                        </div>
+                    </div>
+                    <div class="ai-chat-messages" id="aiChatMessages">
+                        <div class="ai-chat-welcome">
+                            <div class="ai-chat-welcome-text">有什么我能帮你的吗？</div>
+                        </div>
+                    </div>
+                    <div class="ai-chat-input-area">
+                        <div class="ai-chat-quick-buttons">
+                            <button class="ai-chat-quick-btn" data-prompt="快速回答：">⚡ 快速</button>
+                            <button class="ai-chat-quick-btn" data-prompt="帮我写代码：">&lt;/&gt; 编程</button>
+                            <button class="ai-chat-quick-btn" data-prompt="帮我写作：">📝 帮我写作</button>
+                            <button class="ai-chat-quick-btn" data-prompt="解答疑问：">💡 解答答疑</button>
+                            <button class="ai-chat-quick-btn" data-prompt="生成图片描述：">🖼️ 图像生成</button>
+                            <button class="ai-chat-quick-btn" data-prompt="创作音乐：">🎵 音乐生成</button>
+                        </div>
+                        <div class="ai-chat-input-wrapper">
+                            <textarea class="ai-chat-input" id="aiChatInput" placeholder="发消息或输入/选择技能"></textarea>
+                            <button class="ai-chat-send-btn" id="aiChatSendBtn">
+                                <span class="ai-chat-send-icon">🎤</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
